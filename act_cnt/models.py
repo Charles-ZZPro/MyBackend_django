@@ -13,7 +13,7 @@ sys.setdefaultencoding('utf-8')
 # Create your models here.
 def get_pgconn():
 	# Connect to an existing database
-	conn = psycopg2.connect("dbname=myTestDB user=littleAdmin password=postgres")
+	conn = psycopg2.connect("dbname=myTestDB user=postgres password=postgres")
 	# Open a cursor to perform database operations
 	cur = conn.cursor()
 	return cur,conn
