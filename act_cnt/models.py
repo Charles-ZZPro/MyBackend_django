@@ -181,10 +181,10 @@ def insert_daily_fake_data():
     # cur.execute("insert into table_activate_num(proj_name,date_s,act_num,proj_id) values(%s,%s,%s,%s)",('第二个项目',date_str,rand2,2))    
     # cur.execute("insert into table_activate_num(proj_name,date_s,act_num,proj_id) values(%s,%s,%s,%s)",('第三个项目',date_str,rand3,3))
     # cur.execute("insert into table_activate_num(proj_name,date_s,act_num,proj_id) values(%s,%s,%s,%s)",('第四个test项目',date_str,rand4,4))        
-    sql_insert_act = "insert into table_activate_num(proj_name,date_s,act_num,proj_id) values('第一个项目','"+date_str+"',"+rand1+",1);"+\
-    "insert into table_activate_num(proj_name,date_s,act_num,proj_id) values('第二个项目','"+date_str+"',"+rand2+",2);"+\
-    "insert into table_activate_num(proj_name,date_s,act_num,proj_id) values('第三个项目','"+date_str+"',"+rand3+",3);"+\
-    "insert into table_activate_num(proj_name,date_s,act_num,proj_id) values('第四个test项目','"+date_str+"',"+rand4+",4);"
+    sql_insert_act = "insert into table_activate_num(proj_name,date_s,act_num,proj_id) values('project 1','"+date_str+"',"+rand1+",1);"+\
+    "insert into table_activate_num(proj_name,date_s,act_num,proj_id) values('project 2','"+date_str+"',"+rand2+",2);"+\
+    "insert into table_activate_num(proj_name,date_s,act_num,proj_id) values('project 3','"+date_str+"',"+rand3+",3);"+\
+    "insert into table_activate_num(proj_name,date_s,act_num,proj_id) values('project 4','"+date_str+"',"+rand4+",4);"
 
     #print sql_insert_act                    
     cur.execute(sql_insert_act)
