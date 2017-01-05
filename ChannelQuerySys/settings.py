@@ -97,9 +97,9 @@ WSGI_APPLICATION = 'ChannelQuerySys.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'myTestDB',
-        'USER': 'postgres',
+        'USER': 'littleAdmin',
         'PASSWORD': 'postgres',
         'HOST':'localhost',
         'PORT':'5432',
