@@ -94,5 +94,10 @@ def get_map_data(request):
     #print result_item
     #return HttpResponse(json.dumps(result_item,ensure_ascii=False), content_type="application/json") 
     return HttpResponse(result_item, content_type="text/plain")  
+
+def putting_data(request):
+    print "fffffffff"
+    return HttpResponse(models.putting_data())
+    
     
     

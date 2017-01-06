@@ -568,3 +568,16 @@ def get_map_data(proj_id):
     print result_str
 
     return result_str
+
+def putting_data():
+    cur,conn = get_pgconn()        
+    #rand1 = random.uniform(0.20,0.99)      
+    #sql_insert_act = "update table_activate_num_fake set rate="+str(rand1)+" where country='bra' and id="+str(id_got)
+    sql_insert_act = "update table_activate_num_fake set proj_id=1 where date_s>'2017-01-05'"
+    #print sql_insert_act
+    #id_got=id_got+1
+    cur.execute(sql_insert_act)
+    commit_conn(conn)   
+    close_pgconn(cur,conn)     
+
+    return"OK"
