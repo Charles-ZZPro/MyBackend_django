@@ -17,3 +17,4 @@ urlpatterns = [
     url(r'^get_top5_lively_country/$', views.get_top5_lively_country),   
     url(r'^get_map_data/$', views.get_map_data),        
 ]
+#http://120.77.179.136/

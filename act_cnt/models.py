@@ -27,7 +27,7 @@ def commit_conn(conn):
 
 def get_active_totalnums():
     cur,conn= get_pgconn()
-    sql_get_act = "select proj_name, proj_id, sum(act_num) cnt_num from table_activate_num_fake group by proj_id, proj_name order by proj_id "
+    sql_get_act = "select proj_name, proj_id, sum(act_num) cnt_num from table_activate_num_fake group by proj_id, proj_name order by proj_id limit 1"
     cur.execute(sql_get_act)
     results = cur.fetchall()
     close_pgconn(cur,conn)
@@ -246,7 +246,7 @@ def insert_daily_fake_data_fortesting():
     t_str = '2016-12-29'
 
     now_fake = datetime.datetime.strptime(t_str,'%Y-%m-%d')
-    rand1 = random.randint(21000,23000)
+    rand1 = random.randint(5000,5300)
 
     t_str_end = '2017-01-08'
 
@@ -258,7 +258,8 @@ def insert_daily_fake_data_fortesting():
         date_str = now_fake.strftime('%Y-%m-%d')
         #rand1 = random.randint(30,100)
         
-        rand1 = rand1 + random.randint(1200, 1800)
+        rand1 = rand1 + random.randint(200, 600)
+        rand1_uni = random.uniform(0.88,0.92)
         #rand1 = rand1 + random.randint(20, 30)
         
         #rand3 = str(random.randint(1000, 1000000))
@@ -266,18 +267,19 @@ def insert_daily_fake_data_fortesting():
 
         date_str = now_fake.strftime('%Y-%m-%d')  
 
-        cur,conn = get_pgconn()
+        # cur,conn = get_pgconn()
         # cur.execute("insert into table_activate_num(proj_name,date_s,act_num,proj_id) values(%s,%s,%s,%s)",('第一个项目',date_str,rand1,1))
         # conn.commit()
         # cur.execute("insert into table_activate_num(proj_name,date_s,act_num,proj_id) values(%s,%s,%s,%s)",('第二个项目',date_str,rand2,2))    
         # cur.execute("insert into table_activate_num(proj_name,date_s,act_num,proj_id) values(%s,%s,%s,%s)",('第三个项目',date_str,rand3,3))
         # cur.execute("insert into table_activate_num(proj_name,date_s,act_num,proj_id) values(%s,%s,%s,%s)",('第四个test项目',date_str,rand4,4))        
-        sql_insert_act = "insert into table_activate_num_fake(proj_name,date_s,act_num,proj_id,country) values('project_1','"+date_str+"',"+str(rand1)+",1,'India');"
+        sql_insert_act = "insert into table_activate_num_fake(proj_name,date_s,act_num,proj_id,country,rate) values('project_1','"+date_str+"',"+str(rand1)+",1,'China',"+str(rand1_uni)+");"
 
         #print sql_insert_act                    
-        cur.execute(sql_insert_act)
-        commit_conn(conn)   
-        close_pgconn(cur,conn)
+        # cur.execute(sql_insert_act)
+        # commit_conn(conn)   
+        # close_pgconn(cur,conn)
+        print sql_insert_act
 
     #results = cur.fetchall()
     print " that is enough"
