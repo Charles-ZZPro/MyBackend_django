@@ -13,7 +13,7 @@ sys.setdefaultencoding('utf-8')
 # Create your models here.
 def get_pgconn():
 	# Connect to an existing database
-	conn = psycopg2.connect("dbname=myTestDB user=littleAdmin password=postgres")
+	conn = psycopg2.connect("dbname=myTestDB user=postgres password=postgres")
 	# Open a cursor to perform database operations
 	cur = conn.cursor()
 	return cur,conn
@@ -243,12 +243,12 @@ def insert_daily_fake_data_fortesting():
 
     delta=datetime.timedelta(days=1)
 
-    t_str = '2016-09-17'
+    t_str = '2016-12-29'
 
     now_fake = datetime.datetime.strptime(t_str,'%Y-%m-%d')
-    rand1 = random.randint(80,100)
+    rand1 = random.randint(21000,23000)
 
-    t_str_end = '2016-10-22'
+    t_str_end = '2017-01-08'
 
     t_str_end_fake = datetime.datetime.strptime(t_str_end,'%Y-%m-%d')
 
@@ -256,9 +256,9 @@ def insert_daily_fake_data_fortesting():
         now_fake=now_fake+delta
 
         date_str = now_fake.strftime('%Y-%m-%d')
-        rand1 = random.randint(30,100)
+        #rand1 = random.randint(30,100)
         
-        #rand1 = rand1 + random.randint(20, 30)
+        rand1 = rand1 + random.randint(1200, 1800)
         #rand1 = rand1 + random.randint(20, 30)
         
         #rand3 = str(random.randint(1000, 1000000))
@@ -272,7 +272,7 @@ def insert_daily_fake_data_fortesting():
         # cur.execute("insert into table_activate_num(proj_name,date_s,act_num,proj_id) values(%s,%s,%s,%s)",('第二个项目',date_str,rand2,2))    
         # cur.execute("insert into table_activate_num(proj_name,date_s,act_num,proj_id) values(%s,%s,%s,%s)",('第三个项目',date_str,rand3,3))
         # cur.execute("insert into table_activate_num(proj_name,date_s,act_num,proj_id) values(%s,%s,%s,%s)",('第四个test项目',date_str,rand4,4))        
-        sql_insert_act = "insert into table_activate_num_fake(proj_name,date_s,act_num,proj_id,country) values('project_1','"+date_str+"',"+str(rand1)+",1,'taiwan');"
+        sql_insert_act = "insert into table_activate_num_fake(proj_name,date_s,act_num,proj_id,country) values('project_1','"+date_str+"',"+str(rand1)+",1,'India');"
 
         #print sql_insert_act                    
         cur.execute(sql_insert_act)
