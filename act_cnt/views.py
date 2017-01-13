@@ -97,7 +97,15 @@ def get_map_data(request):
 
 def putting_data(request):
     print "fffffffff"
-    return HttpResponse(models.putting_data())
+    return HttpResponse(models.putting_data())   
     
-    
+def insert_formatted_data_to_db(request):
+    print "fffffffff"
+    file_name = request.GET.get('file_name')
+    return HttpResponse(models.insert_formatted_data_to_db(file_name))   
+
+def insert_formatted_data_to_db_imsi(request):
+    print "fffffffff"
+    return HttpResponse(models.insert_formatted_data_to_db_imsi())   
+     
     

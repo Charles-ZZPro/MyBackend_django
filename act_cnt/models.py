@@ -1,22 +1,59 @@
 #-*-coding:utf-8-*-
 from __future__ import unicode_literals
-
+import gzip 
+import tarfile
+import os
 from django.db import models
 import psycopg2
 import sys
 import datetime
 import random
+import shutil
+
+#from pyinotify import WatchManager, Notifier, ProcessEvent, IN_DELETE, IN_CREATE, IN_MODIFY
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+# class EventHandler(ProcessEvent):
+#     def process_IN_CREATE(self, event):
+#         print "Create file:%s." %os.path.join(event.path,event.name)
+
+#         os.system('cp -rf %s /tmp/bak/'%(os.path.join(event.path,event.name)))
+#     def process_IN_DELETE(self, event):
+#         print "Delete file:%s." %os.path.join(event.path,event.name)
+
+#     def process_IN_MODIFY(self, event):
+#         print "Modify file:%s." %os.path.join(event.path,event.name)
+
+# def FsMonitor(path='.'):
+#     wm = WatchManager()
+#     mask = IN_DELETE | IN_CREATE | IN_MODIFY
+#     notifier = Notifier(wm, EventHandler())
+#     wm.add_watch(path, mask, auto_add= True, rec=True)
+#     print "now starting monitor %s." %path
+
+#     while True:
+#         try:
+#             notifier.process_events()
+#             if notifier.check_events():
+#                 print "check event true."
+#                 notifier.read_events()
+#         except KeyboardInterrupt:
+#             print "keyboard Interrupt."
+#             notifier.stop()
+#             break
+# def test_moniter:
+#     FsMonitor("/home/charles/log/")
+
 # Create your models here.
 def get_pgconn():
 	# Connect to an existing database
-	conn = psycopg2.connect("dbname=myTestDB user=postgres password=postgres")
-	# Open a cursor to perform database operations
-	cur = conn.cursor()
-	return cur,conn
+	#conn = psycopg2.connect("dbname=myTestDB user=postgres password=postgres")
+    conn = psycopg2.connect("dbname=myTestDB user=littleAdmin password=postgres")
+    # Open a cursor to perform database operations
+    cur = conn.cursor()
+    return cur,conn
 
 def close_pgconn(cur,conn):
     cur.close()    
@@ -580,4 +617,143 @@ def putting_data():
     commit_conn(conn)   
     close_pgconn(cur,conn)     
 
-    return"OK"
+    return "OK"
+
+#从rawdata压缩文件中提取有效新增独立用户，插入数据库
+def insert_formatted_data_to_db(file_name):
+    #file_name = '/home/charles/log/production_2016-11-28.log.tar.gz'
+
+    #t = tarfile.open(fname)
+    #t.extractall(path = ".")
+    #log_file_name = '/home/charles/log/production_2016-11-28.log.3'
+
+    file_name = '/home/charles/log/'+file_name
+
+    """ungz zip file"""  
+    f_name_tar = file_name.replace(".gz", "")  
+    #获取文件的名称，去掉  
+    g_file = gzip.GzipFile(file_name)  
+    #创建gzip对象  
+    open(f_name_tar, "w+").write(g_file.read())  
+    #gzip对象用read()打开后，写入open()建立的文件中。  
+    g_file.close()  
+    #关闭gzip对象
+
+
+    """untar zip file"""  
+    tar = tarfile.open(f_name_tar)  
+    names = tar.getnames()  
+    if os.path.isdir(f_name_tar + "_files"):  
+        pass  
+    else:  
+        os.mkdir(f_name_tar + "_files")  
+    #由于解压后是许多文件，预先建立同名文件夹  
+    for name in names:  
+        tar.extract(name, f_name_tar + "_files/")  
+    tar.close()  
+
+    for file in os.listdir(f_name_tar + "_files/"):
+        f = open(file)
+        for i in f:
+            if i.count('android_id')==0:
+                continue
+            else:
+                ind_imsi = i.index('imsi')
+                ind_imei = i.index('imei')
+                ind_androidid = i.index('android_id')
+                ind_mac = i.index('wifi_mac')
+
+                imsi = i[ind_imsi+7:ind_imsi+22]
+                imei = i[ind_imei+7:ind_imei+22]
+                android_id = i[ind_androidid+13:ind_androidid+28]
+                wifi_mac = i[ind_mac+11:ind_mac+28]
+
+                info_join = imsi+"$&&&#####"+imei+"$&&&#####"+android_id+"$&&&#####"+wifi_mac
+
+                cur,conn= get_pgconn()
+                sql_get_all = "select count(id) from table_activate_num_ids  where imsi='" + imsi + "' or imei='" + imei +"' or android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"'"
+                cur.execute(sql_get_all)
+                results_all = cur.fetchall()
+                close_pgconn(cur,conn)
+
+                if results_all[0][0]==0:
+                    cur,conn = get_pgconn()  
+                    sql_insert_act = "insert into table_activate_num_ids(imsi,imei,android_id,wifi_mac) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"')"             
+                    cur.execute(sql_insert_act)
+                    commit_conn(conn)   
+                    close_pgconn(cur,conn)         
+
+                if imsi.count("UNKNOWN")>0 or imei.count("UNKNOWN")>0:
+                    cur,conn= get_pgconn()
+                    sql_get_all_unk = "select count(id) from table_activate_num_ids  where android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"'"
+                    cur.execute(sql_get_all_unk)
+                    results_all_unk = cur.fetchall()
+                    close_pgconn(cur,conn)   
+
+                    if results_all_unk[0][0]==0: 
+                        cur,conn = get_pgconn()  
+                        sql_insert_act = "insert into table_activate_num_ids(imsi,imei,android_id,wifi_mac) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"')"             
+                        cur.execute(sql_insert_act)
+                        commit_conn(conn)   
+                        close_pgconn(cur,conn)            
+
+    #os.remove(file_name)
+    os.remove(f_name_tar)
+    shutil.rmtree(f_name_tar + "_files/")
+
+    return "OK"
+
+#for testing logfile
+def insert_formatted_data_to_db_imsi():
+    f = open('/home/charles/production_2016-11-28.log.3', 'r')
+
+    iii = 0
+    for i in f:
+        print iii
+        iii+=1
+        #if i.count('imsi')==0:
+        #if i.count('android_id')==0:
+        if i.count('imei')==0:
+            print "nononnonononononono"
+            continue
+        else:
+            print "yesyesyesyesyesyesyes"
+            ind_imsi = i.index('imei')
+            #ind_imsi = i.index('imsi')
+            #ind_imsi = i.index('android_id')
+            imsi = i[ind_imsi+7:ind_imsi+22]
+            #imsi = i[ind_imsi+13:ind_imsi+28]
+            print imsi
+            if judge_imsi_exsit(imsi)==False:
+                print "not exsited!!!!!!!!!!!!!!!!!!!!!!!!!"
+                #f_w = open('/home/charles/myImsi.txt','a')
+                #f_w = open('/home/charles/myAnID.txt','a')
+                f_w = open('/home/charles/myImei.txt','a')
+                imsi_com = imsi+"\n"
+                f_w.write(imsi_com)
+                #f_w.write('\n')
+                f_w.close()
+            else:
+                continue
+
+    return "OK"    
+
+#for testing logfile
+def judge_imsi_exsit(imsi):
+    print "exsitance judging!!!!!!"
+    print imsi
+
+    #f = open('/home/charles/myImsi.txt', 'r')
+    #f = open('/home/charles/myAnID.txt', 'r')
+    f = open('/home/charles/myImei.txt', 'r')
+
+    for i in f:
+        print i
+        if i.count(imsi)>0:
+            print "fffdfddfd"
+            return True
+        else:
+            continue
+
+    f.close()
+    return False    
