@@ -102,7 +102,8 @@ def putting_data(request):
 def insert_formatted_data_to_db(request):
     print "fffffffff"
     file_name = request.GET.get('file_name')
-    return HttpResponse(models.insert_formatted_data_to_db(file_name))   
+    time = request.GET.get('time')    
+    return HttpResponse(models.insert_formatted_data_to_db(file_name,time))   
 
 def insert_formatted_data_to_db_imsi(request):
     print "fffffffff"

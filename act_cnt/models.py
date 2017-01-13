@@ -620,7 +620,9 @@ def putting_data():
     return "OK"
 
 #从rawdata压缩文件中提取有效新增独立用户，插入数据库
-def insert_formatted_data_to_db(file_name):
+def insert_formatted_data_to_db(file_name,time):
+
+    #now = datetime.datetime.now()    
     #file_name = '/home/charles/log/production_2016-11-28.log.tar.gz'
 
     #t = tarfile.open(fname)
@@ -653,7 +655,8 @@ def insert_formatted_data_to_db(file_name):
     tar.close()  
 
     for file in os.listdir(f_name_tar + "_files/"):
-        f = open(file)
+        f = open(f_name_tar + "_files/"+file)
+        #f = open(file)
         for i in f:
             if i.count('android_id')==0:
                 continue
@@ -678,7 +681,7 @@ def insert_formatted_data_to_db(file_name):
 
                 if results_all[0][0]==0:
                     cur,conn = get_pgconn()  
-                    sql_insert_act = "insert into table_activate_num_ids(imsi,imei,android_id,wifi_mac) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"')"             
+                    sql_insert_act = "insert into table_activate_num_ids(imsi,imei,android_id,wifi_mac,date_s) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"')"             
                     cur.execute(sql_insert_act)
                     commit_conn(conn)   
                     close_pgconn(cur,conn)         
@@ -692,7 +695,7 @@ def insert_formatted_data_to_db(file_name):
 
                     if results_all_unk[0][0]==0: 
                         cur,conn = get_pgconn()  
-                        sql_insert_act = "insert into table_activate_num_ids(imsi,imei,android_id,wifi_mac) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"')"             
+                        sql_insert_act = "insert into table_activate_num_ids(imsi,imei,android_id,wifi_mac,date_s) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"')"             
                         cur.execute(sql_insert_act)
                         commit_conn(conn)   
                         close_pgconn(cur,conn)            

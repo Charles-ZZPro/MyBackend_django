@@ -25,6 +25,7 @@ l=os.listdir(base_dir)
 l.sort(key=lambda fn: os.path.getmtime(base_dir+fn) if not os.path.isdir(base_dir+fn) else 0)
 d=datetime.datetime.fromtimestamp(os.path.getmtime(base_dir+l[-1]))
 print('Newest file is : '+l[-1]+"，Time : "+d.strftime("%Y-%m-%d %H:%M:%S"))
+time = d.strftime("%Y-%m-%d-%H:%M:%S")
 
 targetLine = "";  
 file=open("logFileList.txt","r")
@@ -40,5 +41,5 @@ if targetLine!=l[-1]:
     f.write("\n")
     f.write(l[-1])
     f.close()
-    url_path = "http://localhost:8099/act_cnt/insert_formatted_data_to_db/?file_name="+l[-1]
+    url_path = "http://localhost:8099/act_cnt/insert_formatted_data_to_db/?file_name="+l[-1]+"&time="+time
     s = urllib2.urlopen(url_path).read()
