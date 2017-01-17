@@ -36,10 +36,14 @@ file.close()
 
 print('Last file recorded is : '+targetLine)
 
+###### get project name
+proj_name = "Sherlock"
+######
+
 if targetLine!=l[-1]:
     f=open("logFileList.txt","a")
     f.write("\n")
     f.write(l[-1])
     f.close()
-    url_path = "http://localhost:8099/act_cnt/insert_formatted_data_to_db/?file_name="+l[-1]+"&time="+time
+    url_path = "http://localhost:8099/act_cnt/insert_formatted_data_to_db/?file_name="+l[-1]+"&time="+time+"&proj_name="+proj_name
     s = urllib2.urlopen(url_path).read()

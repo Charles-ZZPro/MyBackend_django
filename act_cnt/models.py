@@ -724,6 +724,7 @@ def create_new_table_for_daily_active():
       'android_id text,'\
       'wifi_mac text,'\
       'date_s text,'\
+      'proj_name text,'\
       'CONSTRAINT '+daily_table+'_pkey PRIMARY KEY (id))'\
       'WITH (OIDS=FALSE);'\
       'ALTER TABLE public.'+daily_table+' OWNER TO "littleAdmin";'
@@ -735,7 +736,7 @@ def create_new_table_for_daily_active():
 
 
 #从rawdata压缩文件中提取有效新增独立用户，插入数据库
-def insert_formatted_data_to_db(file_name,time):
+def insert_formatted_data_to_db(file_name,time,proj_name):
 
     #now = datetime.datetime.now()    
     #file_name = '/home/charles/log/production_2016-11-28.log.tar.gz'
@@ -790,28 +791,28 @@ def insert_formatted_data_to_db(file_name,time):
 
                 ### calculating independent users
                 cur,conn= get_pgconn()
-                sql_get_all = "select count(id) from table_activate_num_ids  where imsi='" + imsi + "' or imei='" + imei +"' or android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"'"
+                sql_get_all = "select count(id) from table_activate_num_ids  where imsi='" + imsi + "' or imei='" + imei +"' or android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"' and proj_name='"+proj_name+"'"
                 cur.execute(sql_get_all)
                 results_all = cur.fetchall()
                 close_pgconn(cur,conn)
 
                 if results_all[0][0]==0:
                     cur,conn = get_pgconn()  
-                    sql_insert_act = "insert into table_activate_num_ids(imsi,imei,android_id,wifi_mac,date_s) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"')"             
+                    sql_insert_act = "insert into table_activate_num_ids(imsi,imei,android_id,wifi_mac,date_s,proj_name) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"','"+proj_name+"')"             
                     cur.execute(sql_insert_act)
                     commit_conn(conn)   
                     close_pgconn(cur,conn)         
 
                 if imsi.count("UNKNOWN")>0 or imei.count("UNKNOWN")>0:
                     cur,conn= get_pgconn()
-                    sql_get_all_unk = "select count(id) from table_activate_num_ids  where android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"'"
+                    sql_get_all_unk = "select count(id) from table_activate_num_ids  where android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"' and proj_name='"+proj_name+"'"
                     cur.execute(sql_get_all_unk)
                     results_all_unk = cur.fetchall()
                     close_pgconn(cur,conn)   
 
                     if results_all_unk[0][0]==0: 
                         cur,conn = get_pgconn()  
-                        sql_insert_act = "insert into table_activate_num_ids(imsi,imei,android_id,wifi_mac,date_s) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"')"             
+                        sql_insert_act = "insert into table_activate_num_ids(imsi,imei,android_id,wifi_mac,date_s,proj_name) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"','"+proj_name+"')"             
                         cur.execute(sql_insert_act)
                         commit_conn(conn)   
                         close_pgconn(cur,conn) 
@@ -822,31 +823,31 @@ def insert_formatted_data_to_db(file_name,time):
                 daily_table = "daily_active_"+now_str_t
 
                 cur,conn= get_pgconn()
-                sql_get_all = "select count(id) from "+daily_table+"  where imsi='" + imsi + "' or imei='" + imei +"' or android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"'"
+                sql_get_all = "select count(id) from "+daily_table+"  where imsi='" + imsi + "' or imei='" + imei +"' or android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"' and proj_name='"+proj_name+"'"
                 cur.execute(sql_get_all)
                 results_all = cur.fetchall()
                 close_pgconn(cur,conn)
 
                 if results_all[0][0]==0:
                     cur,conn = get_pgconn()  
-                    sql_insert_act = "insert into "+daily_table+"(imsi,imei,android_id,wifi_mac,date_s) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"')"             
+                    sql_insert_act = "insert into "+daily_table+"(imsi,imei,android_id,wifi_mac,date_s,proj_name) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"','"+proj_name+"')"             
                     cur.execute(sql_insert_act)
                     commit_conn(conn)   
                     close_pgconn(cur,conn)         
 
                 if imsi.count("UNKNOWN")>0 or imei.count("UNKNOWN")>0:
                     cur,conn= get_pgconn()
-                    sql_get_all_unk = "select count(id) from "+daily_table+"  where android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"'"
+                    sql_get_all_unk = "select count(id) from "+daily_table+"  where android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"' and proj_name='"+proj_name+"'"
                     cur.execute(sql_get_all_unk)
                     results_all_unk = cur.fetchall()
                     close_pgconn(cur,conn)   
 
                     if results_all_unk[0][0]==0: 
                         cur,conn = get_pgconn()  
-                        sql_insert_act = "insert into "+daily_table+"(imsi,imei,android_id,wifi_mac,date_s) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"')"             
+                        sql_insert_act = "insert into "+daily_table+"(imsi,imei,android_id,wifi_mac,date_s,proj_name) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"','"+proj_name+"')"             
                         cur.execute(sql_insert_act)
                         commit_conn(conn)   
-                        close_pgconn(cur,conn)                 
+                        close_pgconn(cur,conn)            
 
     #os.remove(file_name)
     os.remove(f_name_tar)
