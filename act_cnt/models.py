@@ -710,7 +710,7 @@ def create_new_table_for_daily_active():
 
     now_t = datetime.datetime.now()
     now_str_t = now_t.strftime('%Y_%m_%d')
-    daily_table = "daily_active_"+now_str_t
+    daily_table = "table_daily_active_"+now_str_t
 
     cur,conn = get_pgconn()  
     sql_create_seq = 'CREATE SEQUENCE public.'+daily_table+'_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 99999999 START 1 CACHE 1;'+'ALTER TABLE public.'+daily_table+'_id_seq OWNER TO "littleAdmin";'
@@ -820,7 +820,7 @@ def insert_formatted_data_to_db(file_name,time,proj_name):
                 ### calculating daily active users
                 now_t = datetime.datetime.now()
                 now_str_t = now_t.strftime('%Y_%m_%d')
-                daily_table = "daily_active_"+now_str_t
+                daily_table = "table_daily_active_"+now_str_t
 
                 cur,conn= get_pgconn()
                 sql_get_all = "select count(id) from "+daily_table+"  where imsi='" + imsi + "' or imei='" + imei +"' or android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"' and proj_name='"+proj_name+"'"
@@ -855,6 +855,34 @@ def insert_formatted_data_to_db(file_name,time,proj_name):
 
     return "OK"
 
+#insert daily total count for every project to database
+def insert_all_daily_data():
+    now_t = datetime.datetime.now()
+    now_str_t = now_t.strftime('%Y_%m_%d')
+    daily_table = "table_daily_active_"+now_str_t
+
+    cur,conn= get_pgconn()
+    sql = "select count(id) cnt,proj_name from "+daily_table+" group by proj_name"
+    cur.execute(sql)
+    results_total_daily = cur.fetchall()
+    close_pgconn(cur,conn) 
+
+    for i in results_total_daily:
+        cur,conn= get_pgconn()
+        sql_in = "insert into table_activate_num_daily_total(date_s,proj_name,total_num) values('"+now_str_t+"','"+i[1]+"',"+str(i[0])+")"
+        cur.execute(sql_in)
+        commit_conn(conn)   
+        close_pgconn(cur,conn)           
+    ###
+
+    ### delete daily table 
+    # cur,conn= get_pgconn()
+    # sql_tun = "truncate "+daily_table
+    # cur.execute(sql_tun)
+    # commit_conn(conn)   
+    # close_pgconn(cur,conn)
+
+    return "OK"  
 
 #for testing logfile
 def insert_formatted_data_to_db_imsi():

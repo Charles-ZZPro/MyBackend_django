@@ -108,7 +108,11 @@ def insert_formatted_data_to_db(request):
 
 def create_new_table_for_daily_active(request):
     print "fffffffff"    
-    return HttpResponse(models.create_new_table_for_daily_active())         
+    return HttpResponse(models.create_new_table_for_daily_active()) 
+
+def insert_all_daily_data(request):
+    print "fffffffff"    
+    return HttpResponse(models.insert_all_daily_data())                 
 
 def insert_formatted_data_to_db_imsi(request):
     print "fffffffff"
