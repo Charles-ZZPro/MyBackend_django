@@ -619,6 +619,121 @@ def putting_data():
 
     return "OK"
 
+# def insert_formatted_data_to_db_daily()
+
+#     #now = datetime.datetime.now()    
+#     #file_name = '/home/charles/log/production_2016-11-28.log.tar.gz'
+
+#     #t = tarfile.open(fname)
+#     #t.extractall(path = ".")
+#     #log_file_name = '/home/charles/log/production_2016-11-28.log.3'
+
+#     file_name = '/home/charles/log/'+file_name
+
+#     """ungz zip file"""  
+#     f_name_tar = file_name.replace(".gz", "")  
+#     #获取文件的名称，去掉  
+#     g_file = gzip.GzipFile(file_name)  
+#     #创建gzip对象  
+#     open(f_name_tar, "w+").write(g_file.read())  
+#     #gzip对象用read()打开后，写入open()建立的文件中。  
+#     g_file.close()  
+#     #关闭gzip对象
+
+
+#     """untar zip file"""  
+#     tar = tarfile.open(f_name_tar)  
+#     names = tar.getnames()  
+#     if os.path.isdir(f_name_tar + "_files"):  
+#         pass  
+#     else:  
+#         os.mkdir(f_name_tar + "_files")  
+#     #由于解压后是许多文件，预先建立同名文件夹  
+#     for name in names:  
+#         tar.extract(name, f_name_tar + "_files/")  
+#     tar.close()  
+
+#     for file in os.listdir(f_name_tar + "_files/"):
+#         f = open(f_name_tar + "_files/"+file)
+#         #f = open(file)
+#         for i in f:
+#             if i.count('android_id')==0:
+#                 continue
+#             else:
+#                 ind_imsi = i.index('imsi')
+#                 ind_imei = i.index('imei')
+#                 ind_androidid = i.index('android_id')
+#                 ind_mac = i.index('wifi_mac')
+
+#                 imsi = i[ind_imsi+7:ind_imsi+22]
+#                 imei = i[ind_imei+7:ind_imei+22]
+#                 android_id = i[ind_androidid+13:ind_androidid+28]
+#                 wifi_mac = i[ind_mac+11:ind_mac+28]
+
+#                 info_join = imsi+"$&&&#####"+imei+"$&&&#####"+android_id+"$&&&#####"+wifi_mac
+
+#                 cur,conn= get_pgconn()
+#                 sql_get_all = "select count(id) from table_activate_num_ids  where imsi='" + imsi + "' or imei='" + imei +"' or android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"'"
+#                 cur.execute(sql_get_all)
+#                 results_all = cur.fetchall()
+#                 close_pgconn(cur,conn)
+
+#                 if results_all[0][0]==0:
+#                     cur,conn = get_pgconn()  
+#                     sql_insert_act = "insert into table_activate_num_ids(imsi,imei,android_id,wifi_mac,date_s) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"')"             
+#                     cur.execute(sql_insert_act)
+#                     commit_conn(conn)   
+#                     close_pgconn(cur,conn)         
+
+#                 if imsi.count("UNKNOWN")>0 or imei.count("UNKNOWN")>0:
+#                     cur,conn= get_pgconn()
+#                     sql_get_all_unk = "select count(id) from table_activate_num_ids  where android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"'"
+#                     cur.execute(sql_get_all_unk)
+#                     results_all_unk = cur.fetchall()
+#                     close_pgconn(cur,conn)   
+
+#                     if results_all_unk[0][0]==0: 
+#                         cur,conn = get_pgconn()  
+#                         sql_insert_act = "insert into table_activate_num_ids(imsi,imei,android_id,wifi_mac,date_s) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"')"             
+#                         cur.execute(sql_insert_act)
+#                         commit_conn(conn)   
+#                         close_pgconn(cur,conn)            
+
+#     #os.remove(file_name)
+#     os.remove(f_name_tar)
+#     shutil.rmtree(f_name_tar + "_files/")
+
+#     return "OK"
+
+#create table for daily active
+def create_new_table_for_daily_active():
+
+    now_t = datetime.datetime.now()
+    now_str_t = now_t.strftime('%Y_%m_%d')
+    daily_table = "daily_active_"+now_str_t
+
+    cur,conn = get_pgconn()  
+    sql_create_seq = 'CREATE SEQUENCE public.'+daily_table+'_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 99999999 START 1 CACHE 1;'+'ALTER TABLE public.'+daily_table+'_id_seq OWNER TO "littleAdmin";'
+    cur.execute(sql_create_seq)
+    commit_conn(conn)   
+    close_pgconn(cur,conn) 
+
+    cur,conn = get_pgconn() 
+    sql_create= 'CREATE TABLE public.'+daily_table+"(id integer NOT NULL DEFAULT nextval('"+daily_table+"_id_seq'::regclass),"+'imsi text,'\
+      'imei text,'\
+      'android_id text,'\
+      'wifi_mac text,'\
+      'date_s text,'\
+      'CONSTRAINT '+daily_table+'_pkey PRIMARY KEY (id))'\
+      'WITH (OIDS=FALSE);'\
+      'ALTER TABLE public.'+daily_table+' OWNER TO "littleAdmin";'
+    cur.execute(sql_create)
+    commit_conn(conn)   
+    close_pgconn(cur,conn) 
+
+    return "OK"
+
+
 #从rawdata压缩文件中提取有效新增独立用户，插入数据库
 def insert_formatted_data_to_db(file_name,time):
 
@@ -671,8 +786,9 @@ def insert_formatted_data_to_db(file_name,time):
                 android_id = i[ind_androidid+13:ind_androidid+28]
                 wifi_mac = i[ind_mac+11:ind_mac+28]
 
-                info_join = imsi+"$&&&#####"+imei+"$&&&#####"+android_id+"$&&&#####"+wifi_mac
+                #info_join = imsi+"$&&&#####"+imei+"$&&&#####"+android_id+"$&&&#####"+wifi_mac
 
+                ### calculating independent users
                 cur,conn= get_pgconn()
                 sql_get_all = "select count(id) from table_activate_num_ids  where imsi='" + imsi + "' or imei='" + imei +"' or android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"'"
                 cur.execute(sql_get_all)
@@ -698,13 +814,46 @@ def insert_formatted_data_to_db(file_name,time):
                         sql_insert_act = "insert into table_activate_num_ids(imsi,imei,android_id,wifi_mac,date_s) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"')"             
                         cur.execute(sql_insert_act)
                         commit_conn(conn)   
-                        close_pgconn(cur,conn)            
+                        close_pgconn(cur,conn) 
+
+                ### calculating daily active users
+                now_t = datetime.datetime.now()
+                now_str_t = now_t.strftime('%Y_%m_%d')
+                daily_table = "daily_active_"+now_str_t
+
+                cur,conn= get_pgconn()
+                sql_get_all = "select count(id) from "+daily_table+"  where imsi='" + imsi + "' or imei='" + imei +"' or android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"'"
+                cur.execute(sql_get_all)
+                results_all = cur.fetchall()
+                close_pgconn(cur,conn)
+
+                if results_all[0][0]==0:
+                    cur,conn = get_pgconn()  
+                    sql_insert_act = "insert into "+daily_table+"(imsi,imei,android_id,wifi_mac,date_s) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"')"             
+                    cur.execute(sql_insert_act)
+                    commit_conn(conn)   
+                    close_pgconn(cur,conn)         
+
+                if imsi.count("UNKNOWN")>0 or imei.count("UNKNOWN")>0:
+                    cur,conn= get_pgconn()
+                    sql_get_all_unk = "select count(id) from "+daily_table+"  where android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"'"
+                    cur.execute(sql_get_all_unk)
+                    results_all_unk = cur.fetchall()
+                    close_pgconn(cur,conn)   
+
+                    if results_all_unk[0][0]==0: 
+                        cur,conn = get_pgconn()  
+                        sql_insert_act = "insert into "+daily_table+"(imsi,imei,android_id,wifi_mac,date_s) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"')"             
+                        cur.execute(sql_insert_act)
+                        commit_conn(conn)   
+                        close_pgconn(cur,conn)                 
 
     #os.remove(file_name)
     os.remove(f_name_tar)
     shutil.rmtree(f_name_tar + "_files/")
 
     return "OK"
+
 
 #for testing logfile
 def insert_formatted_data_to_db_imsi():

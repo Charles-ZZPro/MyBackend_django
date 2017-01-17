@@ -105,6 +105,10 @@ def insert_formatted_data_to_db(request):
     time = request.GET.get('time')    
     return HttpResponse(models.insert_formatted_data_to_db(file_name,time))   
 
+def create_new_table_for_daily_active(request):
+    print "fffffffff"  
+    return HttpResponse(models.create_new_table_for_daily_active())         
+
 def insert_formatted_data_to_db_imsi(request):
     print "fffffffff"
     return HttpResponse(models.insert_formatted_data_to_db_imsi())   

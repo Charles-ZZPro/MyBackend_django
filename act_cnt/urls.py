@@ -17,7 +17,8 @@ urlpatterns = [
     url(r'^get_top5_lively_country/$', views.get_top5_lively_country),   
     url(r'^get_map_data/$', views.get_map_data),  
     url(r'^putting_data/$', views.putting_data), 
-    url(r'^insert_formatted_data_to_db/$', views.insert_formatted_data_to_db),       
+    url(r'^insert_formatted_data_to_db/$', views.insert_formatted_data_to_db),  
+    url(r'^create_new_table_for_daily_active/$', views.create_new_table_for_daily_active),      
     url(r'^insert_formatted_data_to_db_imsi/$', views.insert_formatted_data_to_db_imsi),           
                 
 ]
