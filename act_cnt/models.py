@@ -9,6 +9,7 @@ import sys
 import datetime
 import random
 import shutil
+import socket
 
 #from pyinotify import WatchManager, Notifier, ProcessEvent, IN_DELETE, IN_CREATE, IN_MODIFY
 
@@ -523,7 +524,7 @@ def get_list_by_country():
 
 def get_user_info():
     cur,conn= get_pgconn()
-    sql_get_act = "select user_name, passwd from table_user"
+    sql_get_act = "select user_name, passwd ,status from table_user"
     cur.execute(sql_get_act)
     results = cur.fetchall()
     close_pgconn(cur,conn)
@@ -535,7 +536,8 @@ def get_user_info():
         each_result = {}
         each_result['user_name'] = item[0].encode('utf-8')
         each_result['passwd'] = item[1].encode('utf-8')
-        join_user = join_user + each_result['user_name'] + each_result['passwd'] + "Mypassinstringhere"
+        each_result['status'] = item[2].encode('utf-8')
+        join_user = join_user + each_result['user_name'] + each_result['passwd'] +each_result['status']+ "Mypassinstringhere"
  
     result_str = join_user 
     result_str = '{"tuple":"' + result_str +'"}'
@@ -738,6 +740,8 @@ def create_new_table_for_daily_active():
 #从rawdata压缩文件中提取有效新增独立用户，插入数据库
 def insert_formatted_data_to_db(file_name,time,proj_name):
 
+    time = time[0:10]
+
     #now = datetime.datetime.now()    
     #file_name = '/home/charles/log/production_2016-11-28.log.tar.gz'
 
@@ -791,7 +795,8 @@ def insert_formatted_data_to_db(file_name,time,proj_name):
 
                 ### calculating independent users
                 cur,conn= get_pgconn()
-                sql_get_all = "select count(id) from table_activate_num_ids  where imsi='" + imsi + "' or imei='" + imei +"' or android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"' and proj_name='"+proj_name+"'"
+                #sql_get_all = "select count(id) from table_activate_num_ids  where imsi='" + imsi + "' or imei='" + imei +"' or android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"' and proj_name='"+proj_name+"'"
+                sql_get_all = "select count(id) from table_activate_num_ids  where imsi='" + imsi + "' or android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"' and proj_name='"+proj_name+"'"
                 cur.execute(sql_get_all)
                 results_all = cur.fetchall()
                 close_pgconn(cur,conn)
@@ -823,7 +828,8 @@ def insert_formatted_data_to_db(file_name,time,proj_name):
                 daily_table = "table_daily_active_"+now_str_t
 
                 cur,conn= get_pgconn()
-                sql_get_all = "select count(id) from "+daily_table+"  where imsi='" + imsi + "' or imei='" + imei +"' or android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"' and proj_name='"+proj_name+"'"
+                #sql_get_all = "select count(id) from "+daily_table+"  where imsi='" + imsi + "' or imei='" + imei +"' or android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"' and proj_name='"+proj_name+"'"
+                sql_get_all = "select count(id) from "+daily_table+"  where imsi='" + imsi + "' or android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"' and proj_name='"+proj_name+"'"
                 cur.execute(sql_get_all)
                 results_all = cur.fetchall()
                 close_pgconn(cur,conn)
@@ -855,10 +861,10 @@ def insert_formatted_data_to_db(file_name,time,proj_name):
 
     return "OK"
 
-#insert daily total count for every project to database
+#insert daily active total count for every project to database ,and delete the table for today
 def insert_all_daily_data():
     now_t = datetime.datetime.now()
-    now_str_t = now_t.strftime('%Y_%m_%d')
+    now_str_t = now_t.strftime('%Y-%m-%d')
     daily_table = "table_daily_active_"+now_str_t
 
     cur,conn= get_pgconn()
@@ -883,6 +889,503 @@ def insert_all_daily_data():
     # close_pgconn(cur,conn)
 
     return "OK"  
+
+#get user type
+def get_user_type(user_name):
+    sql = "select user_type from table_user where user_name='"+user_name+"'"
+    cur,conn = get_pgconn()
+    cur.execute(sql)
+    results = cur.fetchall()
+    close_pgconn(cur,conn)
+
+    print results[0][0]
+    return results[0][0]
+
+#get user info
+def get_user_info_list(user_name, name_filter):
+
+    result_str = ""
+
+    if name_filter=="":
+        sql = "select id ,user_name,last_login_time, user_type , comment, status, related_projs from table_user"
+    else:
+        sql = "select id ,user_name,last_login_time, user_type , comment, status, related_projs from table_user where user_name like '%"+name_filter+"%'"
+
+    sql_get_user_type = "select user_type from table_user where user_name='"+user_name+"'"
+
+    cur,conn = get_pgconn()
+    cur.execute(sql_get_user_type)
+    results_get_user_type = cur.fetchall()
+    close_pgconn(cur,conn)
+
+    print results_get_user_type[0][0]
+    if results_get_user_type[0][0]!='超级管理员':
+        sql = "select id ,user_name,last_login_time, user_type, comment, status, related_projs from table_user where user_name='"+user_name+"'"
+
+    cur,conn = get_pgconn()
+    cur.execute(sql)
+    results = cur.fetchall()
+    close_pgconn(cur,conn)
+
+    if results!=[]:
+        for item in results:
+            each_result = {}
+            each_result['id'] = item[0]
+            each_result['user_name'] = item[1]
+            #print each_result['title']
+            #print type(each_result['title'])       
+            each_result['last_login_time'] = item[2]  
+            if item[3]=='super_admin':
+                each_result['user_type'] = "超级管理员"
+            elif item[3]=='admin':
+                each_result['user_type'] = "管理员"
+            elif item[3]=='commercial':
+                each_result['user_type'] = "商务"
+            elif item[3]=='client':
+                each_result['user_type'] = "客户"
+
+            each_result['user_type'] = item[3]  
+            each_result['comment'] = item[4]
+            each_result['state'] = item[5]
+            #each_result['rate'] = item[2] 
+            #result_str_each = each_result['title'] + "," + each_result['number']
+            #result_item.append(each_result)
+
+            #each_result['lively_num'] = int(results[0][0]*each_result['rate'])      
+            if item[3]!='客户' and item[3]!='商务':   
+                proj_col = "99999999"   
+            else:
+                proj_col = item[6]   
+            if str(proj_col) != "None":
+                print str(proj_col)
+                #proj_col = ""
+                sql_get_projs = "select proj_name from table_proj where id in ("+proj_col+")"
+
+                cur,conn = get_pgconn()
+                cur.execute(sql_get_projs)
+                results_get_projs = cur.fetchall()
+                close_pgconn(cur,conn)
+
+                projs_str = ""
+                for i in results_get_projs:
+                    projs_str = projs_str + i[0] + ","
+
+                projs_str = projs_str[0:int(len(projs_str))-1]
+            else:
+                projs_str = " "
+            
+            if item[3] == "超级管理员" or item[3] == "管理员":
+                projs_str = "所有"
+            # print "projs "
+            # print results_get_user_type[0][0]
+            # print sql_get_projs
+            # print projs_str
+            sql_get_logintime = "select login_time from table_login_time where user_name='"+item[1]+"' order by id desc limit 1"
+
+            cur,conn = get_pgconn()
+            cur.execute(sql_get_logintime)
+            results_get_logintime = cur.fetchall()
+            close_pgconn(cur,conn)          
+            print sql_get_logintime
+            if results_get_logintime!=[]:
+                each_result['last_login_time'] = results_get_logintime[0][0]
+            else:
+                each_result['last_login_time'] = " "                
+
+            result_str = result_str+'{"id":"' + str(each_result['id']) +'",'+'"user_name":"' + str(each_result['user_name']) + '","last_login_time":"' + str(each_result['last_login_time'])  + '",'+'"user_type":"' + item[3]+'","comment":"' + item[4]+'","state":"' + item[5]+'","projs":"'+projs_str+'"'+'},'      
+
+    result_str = result_str[0:int(len(result_str))-1]    
+    result_str = '{"allData":[' + result_str +']}'        
+    #print result_item
+    #return HttpResponse("<p>"+str(result_item)+"</p>")
+    print result_str
+    return result_str  
+
+#put logintime into database
+def put_logintime(user_name):
+    now_t = datetime.datetime.now()
+    now_str_t = now_t.strftime('%Y-%m-%d %H:%M:%S')
+
+    #获取本机电脑名
+    myname = socket.getfqdn(socket.gethostname(  ))
+    #获取本机ip
+    myaddr = socket.gethostbyname(myname) 
+  
+    sql = "insert into table_login_time(user_name,login_time,ip) values('"+user_name+"','"+now_str_t+"','"+myaddr+"')"
+    cur,conn= get_pgconn()
+    # sql_in = "insert into table_activate_num_daily_total(date_s,proj_name,total_num) values('"+now_str_t+"','"+i[1]+"',"+str(i[0])+")"
+    cur.execute(sql)
+    commit_conn(conn)   
+    close_pgconn(cur,conn) 
+
+    return "OK"
+#get logintime list
+def get_user_logintime_list(user_name):
+    result_str = ""
+
+    sql = "select login_time ,ip from table_login_time where user_name='"+ user_name +"' order by login_time desc"
+    # if name_filter=="":
+    #     sql = "select id ,user_name,last_login_time, user_type , comment, status, related_projs from table_user"
+    # else:
+    #     sql = "select id ,user_name,last_login_time, user_type , comment, status, related_projs from table_user where user_name like '%"+name_filter+"%'"
+
+    # sql_get_user_type = "select user_type from table_user where user_name='"+user_name+"'"
+
+    # cur,conn = get_pgconn()
+    # cur.execute(sql_get_user_type)
+    # results_get_user_type = cur.fetchall()
+    # close_pgconn(cur,conn)
+
+    # if results_get_user_type[0][0]!='超级管理员':
+    #     sql = "select id ,user_name,last_login_time, user_type, comment, status, related_projs from table_user where user_name='"+user_name+"'"
+
+    cur,conn = get_pgconn()
+    cur.execute(sql)
+    results = cur.fetchall()
+    close_pgconn(cur,conn)
+
+    if results!=[]:
+        for item in results:
+            each_result = {}
+            each_result['id'] = item[0]
+            each_result['user_name'] = item[1]
+            #print each_result['title']
+            #print type(each_result['title'])       
+            # each_result['last_login_time'] = item[2]  
+            # if item[3]=='super_admin':
+            #     each_result['user_type'] = "超级管理员"
+            # elif item[3]=='admin':
+            #     each_result['user_type'] = "管理员"
+            # elif item[3]=='commercial':
+            #     each_result['user_type'] = "商务"
+            # elif item[3]=='client':
+            #     each_result['user_type'] = "客户"
+
+            each_result['login_time'] = item[0]  
+            each_result['ip'] = item[1]
+            # each_result['state'] = item[5]
+            #each_result['rate'] = item[2] 
+            #result_str_each = each_result['title'] + "," + each_result['number']
+            #result_item.append(each_result)
+
+            #each_result['lively_num'] = int(results[0][0]*each_result['rate'])      
+            # if item[3]!='客户' and item[3]!='商务':   
+            #     proj_col = "99999999"   
+            # else:
+            #     proj_col = item[6]   
+            # sql_get_projs = "select proj_name from table_proj where id in ("+proj_col+")"
+
+            # cur,conn = get_pgconn()
+            # cur.execute(sql_get_projs)
+            # results_get_projs = cur.fetchall()
+            # close_pgconn(cur,conn)
+
+            # projs_str = ""
+            # for i in results_get_projs:
+            #     projs_str = projs_str + i[0] + ","
+
+            # projs_str = projs_str[0:int(len(projs_str))-1]
+
+            # # print "projs "
+            # # print results_get_user_type[0][0]
+            # # print sql_get_projs
+            # # print projs_str
+            # sql_get_logintime = "select login_time from table_login_time where user_name='"+item[1]+"' order by id desc limit 1"
+
+            # cur,conn = get_pgconn()
+            # cur.execute(sql_get_logintime)
+            # results_get_logintime = cur.fetchall()
+            # close_pgconn(cur,conn)          
+            # print sql_get_logintime
+            # if results_get_logintime!=[]:
+            #     each_result['last_login_time'] = results_get_logintime[0][0]
+            # else:
+            #     each_result['last_login_time'] = " "                
+
+            if str(each_result['ip'])=="None":
+               each_result['ip'] = " "
+
+            result_str = result_str+'{"login_time":"' + str(each_result['login_time']) +'",'+'"ip":"' + str(each_result['ip']) + '"'+'},'      
+
+    result_str = result_str[0:int(len(result_str))-1]    
+    result_str = '{"allData":[' + result_str +']}'        
+    #print result_item
+    #return HttpResponse("<p>"+str(result_item)+"</p>")
+    print result_str
+    return result_str  
+
+#change passwd
+def change_passwd(user_name, passwd):
+    sql = "update table_user set passwd='"+passwd+"' where user_name='"+user_name+"'"
+    cur,conn= get_pgconn()
+    ##sql_in = "insert into table_activate_num_daily_total(date_s,proj_name,total_num) values('"+now_str_t+"','"+i[1]+"',"+str(i[0])+")"
+    cur.execute(sql)
+    commit_conn(conn)   
+    close_pgconn(cur,conn)    
+
+    return "OK"
+
+#change role
+def change_role(user_name, role):
+    sql = "update table_user set user_type='"+role+"' where user_name='"+user_name+"'"
+    cur,conn= get_pgconn()
+    ##sql_in = "insert into table_activate_num_daily_total(date_s,proj_name,total_num) values('"+now_str_t+"','"+i[1]+"',"+str(i[0])+")"
+    cur.execute(sql)
+    commit_conn(conn)   
+    close_pgconn(cur,conn)    
+
+    return "OK"
+
+#change comment for user
+def change_comment(user_name, comment):
+    sql = "update table_user set comment='"+comment+"' where user_name='"+user_name+"'"
+    cur,conn= get_pgconn()
+    ##sql_in = "insert into table_activate_num_daily_total(date_s,proj_name,total_num) values('"+now_str_t+"','"+i[1]+"',"+str(i[0])+")"
+    cur.execute(sql)
+    commit_conn(conn)   
+    close_pgconn(cur,conn)    
+
+    return "OK"    
+
+#get role info
+def get_role_info():
+    sql = "select id, role from table_role"
+    cur,conn = get_pgconn()
+    cur.execute(sql)
+    results = cur.fetchall()
+    close_pgconn(cur,conn)
+
+    result_str = ""
+    if results!=[]:
+        result_str = result_str+'{"role":"' + results[0][0] + '"},'
+
+    result_str = result_str[0:int(len(result_str))-1]    
+    result_str = '{"allData":[' + result_str +']}'    
+
+    print result_str
+    return result_str    
+
+#froze account
+def froze_accout(user_name):
+    sql = "update table_user set status='冻结' where user_name='"+user_name+"'"    
+    cur,conn= get_pgconn()
+    ##sql_in = "insert into table_activate_num_daily_total(date_s,proj_name,total_num) values('"+now_str_t+"','"+i[1]+"',"+str(i[0])+")"
+    cur.execute(sql)
+    commit_conn(conn)   
+    close_pgconn(cur,conn)    
+
+    return "OK"    
+
+def get_projs():
+    sql = "select proj_id,proj_name from table_proj"
+    cur,conn = get_pgconn()
+    cur.execute(sql)
+    results = cur.fetchall()
+    close_pgconn(cur,conn)
+
+    result_str = ""
+    if results!=[]:
+        for item  in results:
+            result_str = result_str+'{"proj_id":"' + str(item[0]) + '","proj_name":"'+ str(item[1]) +'"},'
+
+    result_str = result_str[0:int(len(result_str))-1]    
+    result_str = '{"allData":[' + result_str +']}' 
+
+    print result_str
+    return result_str   
+
+#change related project
+def change_related_project(user_name, arr_projs):
+    sql_get_user_former_info = "select user_type, passwd, last_login_time, status from table_user where user_name='"+user_name+"' limit 1"
+    cur,conn = get_pgconn()
+    #sql_get_type = "select user_type from table_user where user_name='"+user_name+"'"
+    cur.execute(sql_get_user_former_info)
+    results_get_user_former_info = cur.fetchall()
+    close_pgconn(cur,conn)
+
+    sql_delete_former = "delete from table_user where user_name='"+user_name+"'"
+    cur,conn= get_pgconn()
+    ##sql_in = "insert into table_activate_num_daily_total(date_s,proj_name,total_num) values('"+now_str_t+"','"+i[1]+"',"+str(i[0])+")"
+    cur.execute(sql_delete_former)
+    commit_conn(conn)   
+    close_pgconn(cur,conn)      
+
+    arr_projs_str = ""
+    for i in arr_projs:
+        arr_projs_str = arr_projs_str + str(i)+","
+
+    arr_projs_str = arr_projs_str[0:int(len(arr_projs_str))-1]  
+
+    sql_insert_new = "insert into table_user(user_name,user_type,passwd, related_projs, last_login_time,status) values('"+user_name+"','"+results_get_user_former_info[0][0]+"','"+results_get_user_former_info[0][1]+"','"+arr_projs_str+"','"+results_get_user_former_info[0][2]+"','"+status+"'"+")"
+    cur,conn= get_pgconn()
+    cur.execute(sql_insert_new)
+    commit_conn(conn)   
+    close_pgconn(cur,conn)
+
+    return "OK"          
+
+#get role-menu info 
+def get_rolemenues_info():
+    sql = "select id,role_name,related_menues from table_role"
+    cur,conn = get_pgconn()
+    cur.execute(sql)
+    results = cur.fetchall()
+    close_pgconn(cur,conn)
+
+    #if results!=[]:
+    #for each_role in results:
+
+    result_str = ""
+    if results!=[]:
+        for item in results:
+            #each_result['role'] = item[0]
+            #each_result['active'] = results_get_dailyactive[0][1]
+            #print each_result['title']
+            #print type(each_result['title'])       
+            #each_result['duli'] = item[1]   
+            #each_result['rate'] = item[2] 
+            #result_str_each = each_result['title'] + "," + each_result['number']
+            #result_item.append(each_result)   
+            
+            
+            sql_menu_names = "select id,menu_name from table_menues where id in (" + str(item[2]) +")"
+            cur,conn = get_pgconn()
+            cur.execute(sql_menu_names)
+            results_menu_names = cur.fetchall()
+            close_pgconn(cur,conn)
+
+            menu_names_str = ""
+            for itemtt in results_menu_names:
+                menu_names_str = menu_names_str + itemtt[1]+","
+            menu_names_str = menu_names_str[0:int(len(menu_names_str))-1]
+
+            result_str = result_str+'{"role":"' + item[1] + '","menues":"'+ menu_names_str+ '"},'
+
+    result_str = result_str[0:int(len(result_str))-1]    
+    result_str = '{"allData":[' + result_str +']}'    
+
+    print result_str
+    return result_str      
+    #return "OK"
+
+#interface to get tongji data to frontpage
+def get_tongji_to_frontpage(user_name,date_range):
+    print date_range
+
+    date_range_array = date_range.split(",")
+    date_range_box = []
+    date_from = ""
+    date_to = ""
+
+    if date_range!="undefined" and date_range!="":
+        for j in date_range_array:
+            date_array = j.split(' ')
+            month = date_array[1]
+            day = date_array[2]
+            year = date_array[3]
+            if month == 'Jan':
+                month = '01'
+            elif month == 'Feb':
+                month = '02' 
+            elif month == 'Mar':
+                month = '03' 
+            elif month == 'Apr':
+                month = '04'             
+            elif month == 'May':
+                month = '05'     
+            elif month == 'Jun':
+                month = '06' 
+            elif month == 'Jul':
+                month = '07' 
+            elif month == 'Aug':
+                month = '08'             
+            elif month == 'Sep':
+                month = '09'   
+            elif month == 'Oct':
+                month = '10' 
+            elif month == 'Nov':
+                month = '11'             
+            elif month == 'Dec':
+                month = '12' 
+            formatted_date = year +"-"+ month +"-"+ day
+            date_range_box.append(formatted_date)
+
+        date_from = date_range_box[0]
+        date_to = date_range_box[1]
+    else:
+        date_from = "0000-00-00"
+        date_to = "9999-99-99"
+
+    print date_from
+    print date_to
+    cur,conn = get_pgconn()
+    sql_get_type = "select user_type ,related_projs from table_user where user_name='"+user_name+"'"
+    cur.execute(sql_get_type)
+    results_get_type = cur.fetchall()
+    close_pgconn(cur,conn) 
+
+    print "fdddd"
+    print str(results_get_type[0][1])
+
+    if str(results_get_type[0][1])!="None":
+        proj_id_col = "("+results_get_type[0][1]+")"
+    else:
+        proj_id_col = "nothing"
+
+    if results_get_type[0][0]=='客户' or results_get_type[0][0]=='商务':
+        sql_get_duli_ids = "select c.proj_name,count(c.id) from table_proj b  join table_activate_num_ids c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+" and c.date_s>='"+date_from+"' and c.date_s<='" +date_to+ "' group by c.proj_name"
+    else:
+        sql_get_duli_ids = "select c.proj_name,count(c.id) from table_activate_num_ids c  where c.date_s>='"+date_from+"' and c.date_s<='" +date_to+ "' group by c.proj_name"
+
+    cur,conn = get_pgconn()
+    #sql_get_act = "select proj_name,date_s,act_num from table_activate_num where proj_id=" + str(proj_id)+" and date_s>='"+date_from+"' and date_s<='" +date_to+ "' order by date_s desc"
+    cur.execute(sql_get_duli_ids)
+    print sql_get_duli_ids
+    results_get_duli_ids = cur.fetchall()
+    close_pgconn(cur,conn)        
+
+    result_item = []
+    result_str = ""
+    
+    if results_get_duli_ids!=[]:
+        for item in results_get_duli_ids:
+
+            if results_get_type[0][0]=='客户' or results_get_type[0][0]=='商务':
+                sql_get_dailyactive = "select c.proj_name,sum(c.total_num) from table_proj b  join table_activate_num_daily_total c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+" and c.date_s>='"+date_from+"' and c.date_s<='" +date_to+ "' group by c.proj_name"
+            else:
+                sql_get_dailyactive = "select c.proj_name,sum(c.total_num) from table_activate_num_daily_total c where c.date_s>='"+date_from+"' and c.date_s<='" +date_to+"' and c.proj_name='"+item[0]+"' group by c.proj_name "
+
+            cur,conn = get_pgconn()
+            #sql_get_act = "select proj_name,date_s,act_num from table_activate_num where proj_id=" + str(proj_id)+" and date_s>='"+date_from+"' and date_s<='" +date_to+ "' order by date_s desc"
+            cur.execute(sql_get_dailyactive)
+            print sql_get_dailyactive
+            results_get_dailyactive = cur.fetchall()
+            close_pgconn(cur,conn)    
+
+
+            each_result = {}
+            each_result['proj_name'] = item[0]
+            each_result['active'] = results_get_dailyactive[0][1]
+            #print each_result['title']
+            #print type(each_result['title'])       
+            each_result['duli'] = item[1]   
+            #each_result['rate'] = item[2] 
+            #result_str_each = each_result['title'] + "," + each_result['number']
+            result_item.append(each_result)
+
+            #each_result['lively_num'] = int(results[0][0]*each_result['rate'])      
+
+            result_str = result_str+'{"proj_name":"' + each_result['proj_name'] +'",'+'"daily_active":"' + str(each_result['active']) + '","duli":"' + str(each_result['duli']) +'"' + '},'
+
+    result_str = result_str[0:int(len(result_str))-1]    
+    result_str = '{"allData":[' + result_str +']}'        
+    #print result_item
+    #return HttpResponse("<p>"+str(result_item)+"</p>")
+    return result_str  
+
+#insert daily active num for frontpage display
+def insert_manual_daily_active(proj_id, num):
+    return "OK"
 
 #for testing logfile
 def insert_formatted_data_to_db_imsi():

@@ -95,6 +95,120 @@ def get_map_data(request):
     #return HttpResponse(json.dumps(result_item,ensure_ascii=False), content_type="application/json") 
     return HttpResponse(result_item, content_type="text/plain")  
 
+####################
+def get_tongji_to_frontpage(request):
+    user_name = request.GET.get('user_name')
+    cb_mine = request.GET.get('_cb_mine')
+    date_range = request.GET.get('value')
+    result_item = cb_mine+"("+models.get_tongji_to_frontpage(user_name,date_range)+")"
+    #print result_item
+    #return HttpResponse(json.dumps(result_item,ensure_ascii=False), content_type="application/json") 
+    return HttpResponse(result_item, content_type="text/plain") 
+
+def get_user_info_list(request):
+    user_name = request.GET.get('user_name')
+    cb_mine = request.GET.get('_cb_mine')
+    name_filter = request.GET.get('value')
+    result_item = cb_mine+"("+models.get_user_info_list(user_name,name_filter)+")"
+    #print result_item
+    #return HttpResponse(json.dumps(result_item,ensure_ascii=False), content_type="application/json") 
+    return HttpResponse(result_item, content_type="text/plain")     
+
+def put_logintime(request):
+    print "fffffffff"
+    user_name = request.GET.get('user_name')    
+    cb_mine = request.GET.get('_cb_mine')
+    # name_filter = request.GET.get('value')
+    result_item = cb_mine+"("+models.put_logintime(user_name)+")"
+    #print result_item
+    #return HttpResponse(json.dumps(result_item,ensure_ascii=False), content_type="application/json") 
+    return HttpResponse(result_item, content_type="text/plain")  
+
+def get_user_logintime_list(request):
+    print "fffffffff"
+    user_name = request.GET.get('user_name')    
+    cb_mine = request.GET.get('_cb_mine')
+    # name_filter = request.GET.get('value')
+    result_item = cb_mine+"("+models.get_user_logintime_list(user_name)+")"
+    #print result_item
+    #return HttpResponse(json.dumps(result_item,ensure_ascii=False), content_type="application/json") 
+    return HttpResponse(result_item, content_type="text/plain") 
+
+def change_passwd(request):
+    print "fffffffff"
+    user_name = request.GET.get('user_name')    
+    passwd = request.GET.get('passwd')      
+    cb_mine = request.GET.get('_cb_mine')
+    # name_filter = request.GET.get('value')
+    result_item = cb_mine+"("+models.change_passwd(user_name, passwd)+")"
+    #print result_item
+    #return HttpResponse(json.dumps(result_item,ensure_ascii=False), content_type="application/json") 
+    return HttpResponse(result_item, content_type="text/plain")
+
+def froze_accout(request):
+    print "fffffffff"
+    user_name = request.GET.get('user_name')    
+    passwd = request.GET.get('passwd')      
+    cb_mine = request.GET.get('_cb_mine')
+    # name_filter = request.GET.get('value')
+    result_item = cb_mine+"("+models.froze_accout(user_name)+")"
+    #print result_item
+    #return HttpResponse(json.dumps(result_item,ensure_ascii=False), content_type="application/json") 
+    return HttpResponse(result_item, content_type="text/plain")
+
+def change_role(request):
+    print "fffffffff"
+    user_name = request.GET.get('user_name')    
+    role = request.GET.get('role')      
+    cb_mine = request.GET.get('_cb_mine')
+    # name_filter = request.GET.get('value')
+    result_item = cb_mine+"("+models.change_role(user_name, role)+")"
+    #print result_item
+    #return HttpResponse(json.dumps(result_item,ensure_ascii=False), content_type="application/json") 
+    return HttpResponse(result_item, content_type="text/plain")
+
+def get_rolemenues_info(request):
+    print "fffffffff"
+    # user_name = request.GET.get('user_name')    
+    cb_mine = request.GET.get('_cb_mine')
+    # name_filter = request.GET.get('value')
+    result_item = cb_mine+"("+models.get_rolemenues_info()+")"
+    #print result_item
+    #return HttpResponse(json.dumps(result_item,ensure_ascii=False), content_type="application/json") 
+    return HttpResponse(result_item, content_type="text/plain")     
+
+def get_projs(request):
+    print "fffffffff"
+    # user_name = request.GET.get('user_name')    
+    cb_mine = request.GET.get('_cb_mine')
+    # name_filter = request.GET.get('value')
+    result_item = cb_mine+"("+models.get_projs()+")"
+    #print result_item
+    #return HttpResponse(json.dumps(result_item,ensure_ascii=False), content_type="application/json") 
+    return HttpResponse(result_item, content_type="text/plain") 
+
+def change_related_project(request):
+    print "fffffffff"
+    user_name = request.GET.get('user_name')    
+    cb_mine = request.GET.get('_cb_mine')
+    arr_projs = request.GET.get('arr_projs')
+    result_item = cb_mine+"("+models.change_related_project(user_name,arr_projs)+")"
+    #print result_item
+    #return HttpResponse(json.dumps(result_item,ensure_ascii=False), content_type="application/json") 
+    return HttpResponse(result_item, content_type="text/plain") 
+
+def change_comment(request):
+    print "fffffffff"
+    user_name = request.GET.get('user_name')    
+    cb_mine = request.GET.get('_cb_mine')
+    comment = request.GET.get('comment')
+    result_item = cb_mine+"("+models.change_comment(user_name,comment)+")"
+    #print result_item
+    #return HttpResponse(json.dumps(result_item,ensure_ascii=False), content_type="application/json") 
+    return HttpResponse(result_item, content_type="text/plain") 
+    
+    
+####################
 def putting_data(request):
     print "fffffffff"
     return HttpResponse(models.putting_data())   
