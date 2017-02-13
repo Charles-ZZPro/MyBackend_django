@@ -25,7 +25,9 @@
     <el-table :data="countData" class="countTable" >
       <el-table-column prop="proj_name" label="项目" style="width: 20%"></el-table-column>
       <el-table-column prop="daily_active" label="新增日活" style="width: 20%"></el-table-column>
+      <el-table-column prop="total_active" label="总日活" style="width: 20%"></el-table-column>
       <el-table-column prop="duli" label="新增独立用户" style="width: 20%"></el-table-column>
+      
       <el-table-column prop="newAddcount" label="前台新增日活显示数" style="width: 20%">
         <template scope="scope">
           <el-col :span="16">
@@ -53,14 +55,15 @@
         //   {project:'项目3',newAdd:'6765',newAdduser:'6643'},
         //   {project:'项目4',newAdd:'75455',newAdduser:'12311'},
         // ]
-        //apiUrl: 'http://localhost:8099/act_cnt/get_tongji_to_frontpage?proj_id=',
-        apiUrl_filter: 'http://localhost:8099/act_cnt/get_tongji_to_frontpage?',
+        //apiUrl_filter: 'http://120.77.179.136:8099/act_cnt/get_tongji_to_frontpage?',    
+        apiUrl_filter: 'http://localhost:8099/act_cnt/get_tongji_to_frontpage?', 
+        //apiUrl_filter_newdailyactive: 'http://localhost:8099/act_cnt/put_daily_active?',   
       }
     },
     methods:{
       getCustomersFilter: function() {
           //var _msg=JSON.parse(sessionStorage.getItem('_obj'))
-          var username = "null"
+          var username = "WX"
           var apiUrl_local = this.apiUrl_filter + "user_name=" + username+"&value="+this.value
           this.$http.jsonp(apiUrl_local,
               {
@@ -79,7 +82,30 @@
               }, function(response) {
                   console.log("my site para detail  filtering   JSON fucked")
               })
-      },      
+      },  
+      getCustomersFilter_put_newaddDA: function() {
+          //var _msg=JSON.parse(sessionStorage.getItem('_obj'))
+          // var username = "null"
+          var apiUrl_local = this.apiUrl_change_projs + "user_name=" + this.info.user_name
+          this.$http.jsonp(apiUrl_local,
+              {
+                  jsonp:'_cb_mine'
+              }
+              )
+              .then(function(response) {
+                  console.log("fdadafffffffff")
+                  // this.selectProj = response.data.allData
+                  //this.tableData=this.allData.slice(0,7)
+                  //this.total=this.allData.length
+                  //this.currentPage = 1
+                  //this.pageSize = 7
+                  console.log("para detail filtering   not fucked")
+                  console.log(this.countData)
+                  console.log("over")
+              }, function(response) {
+                  console.log("my site para detail  filtering   JSON fucked")
+              })
+      },           
     },
     created:function(){
       var _this=this

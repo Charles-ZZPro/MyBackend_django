@@ -31,8 +31,8 @@ urlpatterns = [
     url(r'^change_role/$', views.change_role), 
     url(r'^get_rolemenues_info/$', views.get_rolemenues_info),     
     url(r'^get_projs/$', views.get_projs),         
-    url(r'^change_comment/$', views.change_comment),            
-    
+    url(r'^change_comment/$', views.change_comment),     
+    url(r'^insert_formatted_data_to_db_pass/$', views.insert_formatted_data_to_db_pass),           
 #############                
 ]
 #http://120.77.179.136/

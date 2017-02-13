@@ -37,6 +37,8 @@
     data (){
       return{
         search:'',
+
+        //apiUrl_filter: 'http://120.77.179.136:8099/act_cnt/get_user_info_list?',        
         apiUrl_filter: 'http://localhost:8099/act_cnt/get_user_info_list?',
         tableData:[],
         // [{

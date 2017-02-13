@@ -207,7 +207,12 @@ def change_comment(request):
     #return HttpResponse(json.dumps(result_item,ensure_ascii=False), content_type="application/json") 
     return HttpResponse(result_item, content_type="text/plain") 
     
-    
+def insert_formatted_data_to_db_pass(request):
+    print "fffffffff"
+    file_name = request.GET.get('file_name')
+    time = request.GET.get('time')    
+    proj_name = request.GET.get('proj_name')      
+    return HttpResponse(models.insert_formatted_data_to_db_pass(file_name,time,proj_name)) 
 ####################
 def putting_data(request):
     print "fffffffff"
