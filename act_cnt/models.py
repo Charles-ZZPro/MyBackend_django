@@ -1051,6 +1051,240 @@ def insert_formatted_data_to_db_pass(file_name,time,proj_name):
 
     return "OK"
 
+#从rawdata压缩文件中提取有效新增独立用户，插入数据库
+def insert_formatted_data_to_db_pass_new_2017():
+
+    proj_name = "Sherlock"
+    # time = time[0:10]
+
+    # #now = datetime.datetime.now()    
+    # #file_name = '/home/charles/log/production_2016-11-28.log.tar.gz'
+
+    # #t = tarfile.open(fname)
+    # #t.extractall(path = ".")
+    # #log_file_name = '/home/charles/log/production_2016-11-28.log.3'
+
+    # file_name = '/home/charles/log/'+file_name
+
+    # """ungz zip file"""  
+    # f_name_tar = file_name.replace(".gz", "")  
+    # #获取文件的名称，去掉  
+    # g_file = gzip.GzipFile(file_name)  
+    # #创建gzip对象  
+    # open(f_name_tar, "w+").write(g_file.read())  
+    # #gzip对象用read()打开后，写入open()建立的文件中。  
+    # g_file.close()  
+    # #关闭gzip对象
+
+
+    # """untar zip file"""  
+    # tar = tarfile.open(f_name_tar)  
+    # names = tar.getnames()  
+    # if os.path.isdir(f_name_tar + "_files"):  
+    #     pass  
+    # else:  
+    #     os.mkdir(f_name_tar + "_files")  
+    # #由于解压后是许多文件，预先建立同名文件夹  
+    # ############ 2016 passed start
+    # print "extracting begin !!!!!!!!!!!!!!!!!!!!!!!!!!!!!1"
+    # ############ 2016 passed end     
+    # for name in names:  
+    #     tar.extract(name, f_name_tar + "_files/")  
+    # tar.close()  
+    # ############ 2016 passed start
+    # print "extracting over !!!!!!!!!!!!!!!!!!!!!!!!!!!!!1"
+    # ############ 2016 passed end  
+    # ############ 2016 passed start
+    time = ""
+    time_p = ""
+    daily_table_last = ""
+    daily_table_list = ['table_daily_active_2017_01_13', 'table_daily_active_2016_12_29', 'table_daily_active_2016_08_30', 'table_daily_active_2017_01_25', 'table_daily_active_2016_09_03', 'table_daily_active_2016_12_05', 'table_daily_active_2016_11_23', 'table_daily_active_2016_06_13', 'table_daily_active_2016_06_14', 'table_daily_active_2016_06_15', 'table_daily_active_2016_06_16', 'table_daily_active_2017_01_21', 'table_daily_active_2016_07_06', 'table_daily_active_2016_07_07', 'table_daily_active_2016_07_08', 'table_daily_active_2016_07_09', 'table_daily_active_2016_12_27', 'table_daily_active_2016_09_13', 'table_daily_active_2017_01_24', 'table_daily_active_2016_08_29', 'table_daily_active_2016_12_14', 'table_daily_active_2016_09_04', 'table_daily_active_2017_01_07', 'table_daily_active_2016_07_04', 'table_daily_active_2016_07_05', 'table_daily_active_2017_01_08', 'table_daily_active_2016_09_05', 'table_daily_active_2017_01_12', 'table_daily_active_2016_12_06', 'table_daily_active_2016_11_22', 'table_daily_active_2016_09_06', 'table_daily_active_2016_09_14', 'table_daily_active_2016_12_19', 'table_daily_active_2016_06_21', 'table_daily_active_2016_06_22', 'table_daily_active_2016_06_23', 'table_daily_active_2016_06_24', 'table_daily_active_2016_06_25', 'table_daily_active_2016_06_26', 'table_daily_active_2016_06_27', 'table_daily_active_2016_06_28', 'table_daily_active_2016_06_29', 'table_daily_active_2016_06_30', 'table_daily_active_2016_07_01', 'table_daily_active_2016_06_10', 'table_daily_active_2016_06_11', 'table_daily_active_2016_06_12', 'table_daily_active_2016_11_28', 'table_daily_active_2016_06_17', 'table_daily_active_2016_06_18', 'table_daily_active_2016_06_19', 'table_daily_active_2016_06_20', 'table_daily_active_2016_12_18', 'table_daily_active_2017_01_23', 'table_daily_active_2016_05_29', 'table_daily_active_2016_05_30', 'table_daily_active_2016_05_31', 'table_daily_active_2016_12_28', 'table_daily_active_2016_12_30', 'table_daily_active_2017_01_22', 'table_daily_active_2016_07_02', 'table_daily_active_2016_07_03']
+
+    f_name_tar = "/home/charles/log/kkk"
+
+    ############ 2016 passed end 
+    for file in os.listdir(f_name_tar + "_files/"):
+        f = open(f_name_tar + "_files/"+file)
+        ############ 2016 passed start
+        print file
+        ############ 2016 passed end       
+
+        #f = open(file)
+
+        for i in f: 
+            if i.count('android_id')==0:
+                ############ 2016 passed start
+                if i.count(']  INFO -- : [')!=0:
+                    time = i[4:14]
+                    time_p = time.replace("-","_")
+                ############ 2016 passed end                
+                continue
+            else:
+                ind_imsi = i.index('imsi')
+                ind_imei = i.index('imei')
+                ind_androidid = i.index('android_id')
+                ind_mac = i.index('wifi_mac')
+
+                imsi = i[ind_imsi+7:ind_imsi+22]
+                imei = i[ind_imei+7:ind_imei+22]
+                android_id = i[ind_androidid+13:ind_androidid+28]
+                wifi_mac = i[ind_mac+11:ind_mac+28]
+
+                #info_join = imsi+"$&&&#####"+imei+"$&&&#####"+android_id+"$&&&#####"+wifi_mac
+
+                ### calculating independent users
+                cur,conn= get_pgconn()
+                #sql_get_all = "select count(id) from table_activate_num_ids  where imsi='" + imsi + "' or imei='" + imei +"' or android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"' and proj_name='"+proj_name+"'"
+                sql_get_all = "select count(id) from table_activate_num_ids  where imsi='" + imsi + "' or android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"' and proj_name='"+proj_name+"'"
+                cur.execute(sql_get_all)
+                results_all = cur.fetchall()
+                close_pgconn(cur,conn)
+
+                if results_all[0][0]==0:
+                    cur,conn = get_pgconn()  
+                    sql_insert_act = "insert into table_activate_num_ids(imsi,imei,android_id,wifi_mac,date_s,proj_name) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"','"+proj_name+"')"             
+                    cur.execute(sql_insert_act)
+                    commit_conn(conn)   
+                    close_pgconn(cur,conn)         
+
+                if imsi.count("UNKNOWN")>0 or imei.count("UNKNOWN")>0:
+                    cur,conn= get_pgconn()
+                    sql_get_all_unk = "select count(id) from table_activate_num_ids  where android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"' and proj_name='"+proj_name+"'"
+                    cur.execute(sql_get_all_unk)
+                    results_all_unk = cur.fetchall()
+                    close_pgconn(cur,conn)   
+
+                    if results_all_unk[0][0]==0: 
+                        cur,conn = get_pgconn()  
+                        sql_insert_act = "insert into table_activate_num_ids(imsi,imei,android_id,wifi_mac,date_s,proj_name) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"','"+proj_name+"')"             
+                        cur.execute(sql_insert_act)
+                        commit_conn(conn)   
+                        close_pgconn(cur,conn) 
+
+                ### calculating daily active users
+
+                now_t = datetime.datetime.now()
+                now_str_t = now_t.strftime('%Y_%m_%d')
+                daily_table = "table_daily_active_"+now_str_t
+           
+                ############ 2016 passed start
+                daily_table = "table_daily_active_"+time_p
+                #daily_table_last = daily_table     
+                if daily_table in daily_table_list:
+                    print "daily table existed !!!!!"   
+                else:
+                    create_new_table_for_daily_active_pass(time_p)
+                    daily_table_last = daily_table
+                    daily_table_list.append(daily_table)
+                ############ 2016 passed end                
+
+
+                cur,conn= get_pgconn()
+                #sql_get_all = "select count(id) from "+daily_table+"  where imsi='" + imsi + "' or imei='" + imei +"' or android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"' and proj_name='"+proj_name+"'"
+                sql_get_all = "select count(id) from "+daily_table+"  where imsi='" + imsi + "' or android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"' and proj_name='"+proj_name+"'"
+                cur.execute(sql_get_all)
+                results_all = cur.fetchall()
+                close_pgconn(cur,conn)
+
+                if results_all[0][0]==0:
+                    cur,conn = get_pgconn()  
+                    sql_insert_act = "insert into "+daily_table+"(imsi,imei,android_id,wifi_mac,date_s,proj_name) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"','"+proj_name+"')"             
+                    cur.execute(sql_insert_act)
+                    commit_conn(conn)   
+                    close_pgconn(cur,conn)         
+
+                if imsi.count("UNKNOWN")>0 or imei.count("UNKNOWN")>0:
+                    cur,conn= get_pgconn()
+                    sql_get_all_unk = "select count(id) from "+daily_table+"  where android_id='"+android_id+"' or wifi_mac='"+wifi_mac+"' and proj_name='"+proj_name+"'"
+                    cur.execute(sql_get_all_unk)
+                    results_all_unk = cur.fetchall()
+                    close_pgconn(cur,conn)   
+
+                    if results_all_unk[0][0]==0: 
+                        cur,conn = get_pgconn()  
+                        sql_insert_act = "insert into "+daily_table+"(imsi,imei,android_id,wifi_mac,date_s,proj_name) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"','"+proj_name+"')"             
+                        cur.execute(sql_insert_act)
+                        commit_conn(conn)   
+                        close_pgconn(cur,conn)            
+
+    #os.remove(file_name)
+    #os.remove(f_name_tar)
+    shutil.rmtree(f_name_tar + "_files/")
+
+    print daily_table_list
+
+    return "OK"    
+
+def get_all_table_name():
+    sql = "select pg_tables.tablename from pg_tables order by pg_tables.tablename"
+    cur,conn = get_pgconn()
+    cur.execute(sql)
+    results = cur.fetchall()
+    close_pgconn(cur,conn)   
+    
+    result_str = []
+    for items in results:
+        result_str.append(items[0])
+
+    print result_str
+    return "OK"
+
+#insert date list into table that holds activated dates
+def put_active_datelist_into_db(arr):
+    arr = ['auth_group', 'auth_group_permissions', 'auth_permission', 'auth_user', 'auth_user_groups', 'auth_user_user_permissions', 'django_admin_log', 'django_content_type', 'django_migrations', 'django_session', 'pg_aggregate', 'pg_am', 'pg_amop', 'pg_amproc', 'pg_attrdef', 'pg_attribute', 'pg_auth_members', 'pg_authid', 'pg_cast', 'pg_class', 'pg_collation', 'pg_constraint', 'pg_conversion', 'pg_database', 'pg_db_role_setting', 'pg_default_acl', 'pg_depend', 'pg_description', 'pg_enum', 'pg_event_trigger', 'pg_extension', 'pg_foreign_data_wrapper', 'pg_foreign_server', 'pg_foreign_table', 'pg_index', 'pg_inherits', 'pg_language', 'pg_largeobject', 'pg_largeobject_metadata', 'pg_namespace', 'pg_opclass', 'pg_operator', 'pg_opfamily', 'pg_pltemplate', 'pg_policy', 'pg_proc', 'pg_range', 'pg_replication_origin', 'pg_rewrite', 'pg_seclabel', 'pg_shdepend', 'pg_shdescription', 'pg_shseclabel', 'pg_statistic', 'pg_tablespace', 'pg_transform', 'pg_trigger', 'pg_ts_config', 'pg_ts_config_map', 'pg_ts_dict', 'pg_ts_parser', 'pg_ts_template', 'pg_type', 'pg_user_mapping', 'sql_features', 'sql_implementation_info', 'sql_languages', 'sql_packages', 'sql_parts', 'sql_sizing', 'sql_sizing_profiles', 'table_activate_date_list', 'table_activate_num', 'table_activate_num_daily_total', 'table_activate_num_fake', 'table_activate_num_ids', 'table_country_list', 'table_daily_active_2016_05_29', 'table_daily_active_2016_05_30', 'table_daily_active_2016_05_31', 'table_daily_active_2016_06_10', 'table_daily_active_2016_06_11', 'table_daily_active_2016_06_12', 'table_daily_active_2016_06_13', 'table_daily_active_2016_06_14', 'table_daily_active_2016_06_15', 'table_daily_active_2016_06_16', 'table_daily_active_2016_06_17', 'table_daily_active_2016_06_18', 'table_daily_active_2016_06_19', 'table_daily_active_2016_06_20', 'table_daily_active_2016_06_21', 'table_daily_active_2016_06_22', 'table_daily_active_2016_06_23', 'table_daily_active_2016_06_24', 'table_daily_active_2016_06_25', 'table_daily_active_2016_06_26', 'table_daily_active_2016_06_27', 'table_daily_active_2016_06_28', 'table_daily_active_2016_06_29', 'table_daily_active_2016_06_30', 'table_daily_active_2016_07_01', 'table_daily_active_2016_07_02', 'table_daily_active_2016_07_03', 'table_daily_active_2016_07_04', 'table_daily_active_2016_07_05', 'table_daily_active_2016_07_06', 'table_daily_active_2016_07_07', 'table_daily_active_2016_07_08', 'table_daily_active_2016_07_09', 'table_daily_active_2016_08_29', 'table_daily_active_2016_08_30', 'table_daily_active_2016_09_03', 'table_daily_active_2016_09_04', 'table_daily_active_2016_09_05', 'table_daily_active_2016_09_06', 'table_daily_active_2016_09_13', 'table_daily_active_2016_09_14', 'table_daily_active_2016_11_22', 'table_daily_active_2016_11_23', 'table_daily_active_2016_11_28', 'table_daily_active_2016_12_05', 'table_daily_active_2016_12_06', 'table_daily_active_2016_12_14', 'table_daily_active_2016_12_18', 'table_daily_active_2016_12_19', 'table_daily_active_2016_12_27', 'table_daily_active_2016_12_28', 'table_daily_active_2016_12_29', 'table_daily_active_2016_12_30', 'table_daily_active_2017_01_07', 'table_daily_active_2017_01_08', 'table_daily_active_2017_01_12', 'table_daily_active_2017_01_13', 'table_daily_active_2017_01_21', 'table_daily_active_2017_01_22', 'table_daily_active_2017_01_23', 'table_daily_active_2017_01_24', 'table_daily_active_2017_01_25', 'table_daily_active_2017_02_13', 'table_daily_active_2017_02_14', 'table_login_time', 'table_menues', 'table_permission', 'table_proj', 'table_role', 'table_user']
+
+    for item in arr:
+        if item.count("table_daily_active_")!=0:
+            sql_get_existance = "select id from table_activate_date_list where date_s='"+str(item[19:29])+"'"
+            cur,conn = get_pgconn()
+            cur.execute(sql_get_existance)
+            results_get_existance = cur.fetchall()
+            close_pgconn(cur,conn)    
+                
+            if results_get_existance==[]:
+                sql = "insert into table_activate_date_list(date_s) values('"+str(item[19:29])+"')"
+                print sql
+                cur,conn = get_pgconn()
+                cur.execute(sql)
+                commit_conn(conn)   
+                close_pgconn(cur,conn)
+
+    return "OK"   
+
+#insert active daily num for 2016
+def put_daily_active_total_2016():
+    sql_get_date_list = "select date_s from table_activate_date_list"
+    cur,conn = get_pgconn()
+    cur.execute(sql_get_date_list)
+    results_get_date_list = cur.fetchall()
+    close_pgconn(cur,conn)  
+
+    for item in results_get_date_list:
+        table_name = "table_daily_active_"+item[0]
+        date_replace = item[0].replace("_","-")
+
+        sql_get_existance = "select id from table_activate_num_daily_total where date_s='"+date_replace+"'"
+        cur,conn = get_pgconn()
+        cur.execute(sql_get_existance)
+        results_get_existance = cur.fetchall()
+        close_pgconn(cur,conn) 
+
+        if results_get_existance==[]:
+            sql_get_num = "select count(id) from "+table_name
+
+            cur,conn = get_pgconn()
+            cur.execute(sql_get_num)
+            results_sql_get_num = cur.fetchall()
+            close_pgconn(cur,conn)  
+
+            sql = "insert into table_activate_num_daily_total(date_s,proj_name,total_num) values('"+date_replace+"','Sherlock',"+str(results_sql_get_num[0][0])+")"
+            cur,conn = get_pgconn()
+            cur.execute(sql)
+            commit_conn(conn)   
+            close_pgconn(cur,conn)
+
+    return "OK"
+
 #insert daily active total count for every project to database ,and delete the table for today
 def insert_all_daily_data():
     now_t = datetime.datetime.now()

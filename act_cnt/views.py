@@ -213,6 +213,35 @@ def insert_formatted_data_to_db_pass(request):
     time = request.GET.get('time')    
     proj_name = request.GET.get('proj_name')      
     return HttpResponse(models.insert_formatted_data_to_db_pass(file_name,time,proj_name)) 
+
+def put_active_datelist_into_db(request):
+    print "fffffffff"
+    arr = request.GET.get('arr')
+    # time = request.GET.get('time')    
+    # proj_name = request.GET.get('proj_name')      
+    return HttpResponse(models.put_active_datelist_into_db(arr)) 
+
+def put_daily_active_total_2016(request):
+    print "fffffffff"
+    # file_name = request.GET.get('file_name')
+    # time = request.GET.get('time')    
+    # proj_name = request.GET.get('proj_name')      
+    return HttpResponse(models.put_daily_active_total_2016())  
+
+def insert_formatted_data_to_db_pass_new_2017(request):
+    print "fffffffff"
+    # file_name = request.GET.get('file_name')
+    # time = request.GET.get('time')    
+    # proj_name = request.GET.get('proj_name')      
+  
+def get_all_table_name(request):
+    print "fffffffff"
+    # file_name = request.GET.get('file_name')
+    # time = request.GET.get('time')    
+    # proj_name = request.GET.get('proj_name')      
+    return HttpResponse(models.get_all_table_name()) 
+    
+           
 ####################
 def putting_data(request):
     print "fffffffff"

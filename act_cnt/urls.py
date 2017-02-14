@@ -32,7 +32,12 @@ urlpatterns = [
     url(r'^get_rolemenues_info/$', views.get_rolemenues_info),     
     url(r'^get_projs/$', views.get_projs),         
     url(r'^change_comment/$', views.change_comment),     
-    url(r'^insert_formatted_data_to_db_pass/$', views.insert_formatted_data_to_db_pass),           
+    url(r'^insert_formatted_data_to_db_pass/$', views.insert_formatted_data_to_db_pass), 
+    url(r'^put_active_datelist_into_db/$', views.put_active_datelist_into_db), 
+    url(r'^put_daily_active_total_2016/$', views.put_daily_active_total_2016),  
+    url(r'^insert_formatted_data_to_db_pass_new_2017/$', views.insert_formatted_data_to_db_pass_new_2017),  
+    url(r'^get_all_table_name/$', views.get_all_table_name),      
+           
 #############                
 ]
 #http://120.77.179.136/
