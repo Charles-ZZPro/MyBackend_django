@@ -3,7 +3,7 @@
     <el-row>
       <el-col :span="24">
         <div class="zh-h-title-l">
-          <span>SherLock</span><span>运营后台</span>
+          <span>Tripics</span><span>运营后台</span>
         </div>
         <div class="zh-h-title-r">
           <span v-text='user'></span>

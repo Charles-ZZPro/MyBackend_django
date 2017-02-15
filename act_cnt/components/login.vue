@@ -1,7 +1,7 @@
 <template>
   <div id="login">
     <el-row >
-      <el-col :span="24" class="zh-title zh-title-h1"><h1>SherLock</h1></el-col>
+      <el-col :span="24" class="zh-title zh-title-h1"><h1>Tripics</h1></el-col>
       <el-col :span="24" class="zh-title-h2 "><h2>运营系统</h2></el-col>
       <el-col :span="8" class="zh-loginName">用户名</el-col>
       <el-col :span="8" class="zh-loginInput">

@@ -37,7 +37,7 @@ file.close()
 print('Last file recorded is : '+targetLine)
 
 ###### get project name
-proj_name = "Sherlock"
+proj_name = "Tripics"
 ######
 
 if targetLine!=l[-1]:

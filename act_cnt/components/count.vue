@@ -24,11 +24,13 @@
     </div>
     <el-table :data="countData" class="countTable" >
       <el-table-column prop="proj_name" label="项目" style="width: 20%"></el-table-column>
-      <el-table-column prop="daily_active" label="新增日活" style="width: 20%"></el-table-column>
-      <el-table-column prop="total_active" label="总日活" style="width: 20%"></el-table-column>
+
+      <el-table-column prop="date" label="日期" style="width: 20%"></el-table-column>      date
+      <el-table-column prop="daily_active" label="日活跃" style="width: 20%"></el-table-column>
+      <!-- <el-table-column prop="total_active" label="总日活" style="width: 20%"></el-table-column> -->
       <el-table-column prop="duli" label="新增独立用户" style="width: 20%"></el-table-column>
-      
-      <el-table-column prop="newAddcount" label="前台新增日活显示数" style="width: 20%">
+      <el-table-column prop="total_duli" label="总独立用户" style="width: 20%"></el-table-column>            
+      <el-table-column prop="newAddcount" label="前台新增日活跃显示数" style="width: 20%">
         <template scope="scope">
           <el-col :span="16">
             <el-input  v-model="addInput" placeholder="请输入数字"></el-input>

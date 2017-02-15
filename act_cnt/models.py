@@ -1054,7 +1054,7 @@ def insert_formatted_data_to_db_pass(file_name,time,proj_name):
 #从rawdata压缩文件中提取有效新增独立用户，插入数据库
 def insert_formatted_data_to_db_pass_new_2017():
 
-    proj_name = "Sherlock"
+    proj_name = "Tripics"
     # time = time[0:10]
 
     # #now = datetime.datetime.now()    
@@ -1098,7 +1098,18 @@ def insert_formatted_data_to_db_pass_new_2017():
     time = ""
     time_p = ""
     daily_table_last = ""
-    daily_table_list = ['table_daily_active_2017_01_13', 'table_daily_active_2016_12_29', 'table_daily_active_2016_08_30', 'table_daily_active_2017_01_25', 'table_daily_active_2016_09_03', 'table_daily_active_2016_12_05', 'table_daily_active_2016_11_23', 'table_daily_active_2016_06_13', 'table_daily_active_2016_06_14', 'table_daily_active_2016_06_15', 'table_daily_active_2016_06_16', 'table_daily_active_2017_01_21', 'table_daily_active_2016_07_06', 'table_daily_active_2016_07_07', 'table_daily_active_2016_07_08', 'table_daily_active_2016_07_09', 'table_daily_active_2016_12_27', 'table_daily_active_2016_09_13', 'table_daily_active_2017_01_24', 'table_daily_active_2016_08_29', 'table_daily_active_2016_12_14', 'table_daily_active_2016_09_04', 'table_daily_active_2017_01_07', 'table_daily_active_2016_07_04', 'table_daily_active_2016_07_05', 'table_daily_active_2017_01_08', 'table_daily_active_2016_09_05', 'table_daily_active_2017_01_12', 'table_daily_active_2016_12_06', 'table_daily_active_2016_11_22', 'table_daily_active_2016_09_06', 'table_daily_active_2016_09_14', 'table_daily_active_2016_12_19', 'table_daily_active_2016_06_21', 'table_daily_active_2016_06_22', 'table_daily_active_2016_06_23', 'table_daily_active_2016_06_24', 'table_daily_active_2016_06_25', 'table_daily_active_2016_06_26', 'table_daily_active_2016_06_27', 'table_daily_active_2016_06_28', 'table_daily_active_2016_06_29', 'table_daily_active_2016_06_30', 'table_daily_active_2016_07_01', 'table_daily_active_2016_06_10', 'table_daily_active_2016_06_11', 'table_daily_active_2016_06_12', 'table_daily_active_2016_11_28', 'table_daily_active_2016_06_17', 'table_daily_active_2016_06_18', 'table_daily_active_2016_06_19', 'table_daily_active_2016_06_20', 'table_daily_active_2016_12_18', 'table_daily_active_2017_01_23', 'table_daily_active_2016_05_29', 'table_daily_active_2016_05_30', 'table_daily_active_2016_05_31', 'table_daily_active_2016_12_28', 'table_daily_active_2016_12_30', 'table_daily_active_2017_01_22', 'table_daily_active_2016_07_02', 'table_daily_active_2016_07_03']
+
+    sql_get_tables = "select pg_tables.tablename from pg_tables order by pg_tables.tablename"
+    cur,conn= get_pgconn()
+    cur.execute(sql_get_tables)
+    results_get_tables = cur.fetchall()
+    close_pgconn(cur,conn)    
+
+    daily_table_list = []
+    for item_tables in results_get_tables:
+        daily_table_list.append(item_tables[0])
+
+    # daily_table_list = ['table_daily_active_2017_01_13', 'table_daily_active_2016_12_29', 'table_daily_active_2016_08_30', 'table_daily_active_2017_01_25', 'table_daily_active_2016_09_03', 'table_daily_active_2016_12_05', 'table_daily_active_2016_11_23', 'table_daily_active_2016_06_13', 'table_daily_active_2016_06_14', 'table_daily_active_2016_06_15', 'table_daily_active_2016_06_16', 'table_daily_active_2017_01_21', 'table_daily_active_2016_07_06', 'table_daily_active_2016_07_07', 'table_daily_active_2016_07_08', 'table_daily_active_2016_07_09', 'table_daily_active_2016_12_27', 'table_daily_active_2016_09_13', 'table_daily_active_2017_01_24', 'table_daily_active_2016_08_29', 'table_daily_active_2016_12_14', 'table_daily_active_2016_09_04', 'table_daily_active_2017_01_07', 'table_daily_active_2016_07_04', 'table_daily_active_2016_07_05', 'table_daily_active_2017_01_08', 'table_daily_active_2016_09_05', 'table_daily_active_2017_01_12', 'table_daily_active_2016_12_06', 'table_daily_active_2016_11_22', 'table_daily_active_2016_09_06', 'table_daily_active_2016_09_14', 'table_daily_active_2016_12_19', 'table_daily_active_2016_06_21', 'table_daily_active_2016_06_22', 'table_daily_active_2016_06_23', 'table_daily_active_2016_06_24', 'table_daily_active_2016_06_25', 'table_daily_active_2016_06_26', 'table_daily_active_2016_06_27', 'table_daily_active_2016_06_28', 'table_daily_active_2016_06_29', 'table_daily_active_2016_06_30', 'table_daily_active_2016_07_01', 'table_daily_active_2016_06_10', 'table_daily_active_2016_06_11', 'table_daily_active_2016_06_12', 'table_daily_active_2016_11_28', 'table_daily_active_2016_06_17', 'table_daily_active_2016_06_18', 'table_daily_active_2016_06_19', 'table_daily_active_2016_06_20', 'table_daily_active_2016_12_18', 'table_daily_active_2017_01_23', 'table_daily_active_2016_05_29', 'table_daily_active_2016_05_30', 'table_daily_active_2016_05_31', 'table_daily_active_2016_12_28', 'table_daily_active_2016_12_30', 'table_daily_active_2017_01_22', 'table_daily_active_2016_07_02', 'table_daily_active_2016_07_03']
 
     f_name_tar = "/home/charles/log/kkk"
 
@@ -1230,8 +1241,19 @@ def get_all_table_name():
     return "OK"
 
 #insert date list into table that holds activated dates
-def put_active_datelist_into_db(arr):
-    arr = ['auth_group', 'auth_group_permissions', 'auth_permission', 'auth_user', 'auth_user_groups', 'auth_user_user_permissions', 'django_admin_log', 'django_content_type', 'django_migrations', 'django_session', 'pg_aggregate', 'pg_am', 'pg_amop', 'pg_amproc', 'pg_attrdef', 'pg_attribute', 'pg_auth_members', 'pg_authid', 'pg_cast', 'pg_class', 'pg_collation', 'pg_constraint', 'pg_conversion', 'pg_database', 'pg_db_role_setting', 'pg_default_acl', 'pg_depend', 'pg_description', 'pg_enum', 'pg_event_trigger', 'pg_extension', 'pg_foreign_data_wrapper', 'pg_foreign_server', 'pg_foreign_table', 'pg_index', 'pg_inherits', 'pg_language', 'pg_largeobject', 'pg_largeobject_metadata', 'pg_namespace', 'pg_opclass', 'pg_operator', 'pg_opfamily', 'pg_pltemplate', 'pg_policy', 'pg_proc', 'pg_range', 'pg_replication_origin', 'pg_rewrite', 'pg_seclabel', 'pg_shdepend', 'pg_shdescription', 'pg_shseclabel', 'pg_statistic', 'pg_tablespace', 'pg_transform', 'pg_trigger', 'pg_ts_config', 'pg_ts_config_map', 'pg_ts_dict', 'pg_ts_parser', 'pg_ts_template', 'pg_type', 'pg_user_mapping', 'sql_features', 'sql_implementation_info', 'sql_languages', 'sql_packages', 'sql_parts', 'sql_sizing', 'sql_sizing_profiles', 'table_activate_date_list', 'table_activate_num', 'table_activate_num_daily_total', 'table_activate_num_fake', 'table_activate_num_ids', 'table_country_list', 'table_daily_active_2016_05_29', 'table_daily_active_2016_05_30', 'table_daily_active_2016_05_31', 'table_daily_active_2016_06_10', 'table_daily_active_2016_06_11', 'table_daily_active_2016_06_12', 'table_daily_active_2016_06_13', 'table_daily_active_2016_06_14', 'table_daily_active_2016_06_15', 'table_daily_active_2016_06_16', 'table_daily_active_2016_06_17', 'table_daily_active_2016_06_18', 'table_daily_active_2016_06_19', 'table_daily_active_2016_06_20', 'table_daily_active_2016_06_21', 'table_daily_active_2016_06_22', 'table_daily_active_2016_06_23', 'table_daily_active_2016_06_24', 'table_daily_active_2016_06_25', 'table_daily_active_2016_06_26', 'table_daily_active_2016_06_27', 'table_daily_active_2016_06_28', 'table_daily_active_2016_06_29', 'table_daily_active_2016_06_30', 'table_daily_active_2016_07_01', 'table_daily_active_2016_07_02', 'table_daily_active_2016_07_03', 'table_daily_active_2016_07_04', 'table_daily_active_2016_07_05', 'table_daily_active_2016_07_06', 'table_daily_active_2016_07_07', 'table_daily_active_2016_07_08', 'table_daily_active_2016_07_09', 'table_daily_active_2016_08_29', 'table_daily_active_2016_08_30', 'table_daily_active_2016_09_03', 'table_daily_active_2016_09_04', 'table_daily_active_2016_09_05', 'table_daily_active_2016_09_06', 'table_daily_active_2016_09_13', 'table_daily_active_2016_09_14', 'table_daily_active_2016_11_22', 'table_daily_active_2016_11_23', 'table_daily_active_2016_11_28', 'table_daily_active_2016_12_05', 'table_daily_active_2016_12_06', 'table_daily_active_2016_12_14', 'table_daily_active_2016_12_18', 'table_daily_active_2016_12_19', 'table_daily_active_2016_12_27', 'table_daily_active_2016_12_28', 'table_daily_active_2016_12_29', 'table_daily_active_2016_12_30', 'table_daily_active_2017_01_07', 'table_daily_active_2017_01_08', 'table_daily_active_2017_01_12', 'table_daily_active_2017_01_13', 'table_daily_active_2017_01_21', 'table_daily_active_2017_01_22', 'table_daily_active_2017_01_23', 'table_daily_active_2017_01_24', 'table_daily_active_2017_01_25', 'table_daily_active_2017_02_13', 'table_daily_active_2017_02_14', 'table_login_time', 'table_menues', 'table_permission', 'table_proj', 'table_role', 'table_user']
+def put_active_datelist_into_db():
+
+    sql_get_tables = "select pg_tables.tablename from pg_tables order by pg_tables.tablename"
+    cur,conn= get_pgconn()
+    cur.execute(sql_get_tables)
+    results_get_tables = cur.fetchall()
+    close_pgconn(cur,conn)    
+
+    arr = []
+    for item_tables in results_get_tables:
+        arr.append(item_tables[0])    
+
+    # arr = ['auth_group', 'auth_group_permissions', 'auth_permission', 'auth_user', 'auth_user_groups', 'auth_user_user_permissions', 'django_admin_log', 'django_content_type', 'django_migrations', 'django_session', 'pg_aggregate', 'pg_am', 'pg_amop', 'pg_amproc', 'pg_attrdef', 'pg_attribute', 'pg_auth_members', 'pg_authid', 'pg_cast', 'pg_class', 'pg_collation', 'pg_constraint', 'pg_conversion', 'pg_database', 'pg_db_role_setting', 'pg_default_acl', 'pg_depend', 'pg_description', 'pg_enum', 'pg_event_trigger', 'pg_extension', 'pg_foreign_data_wrapper', 'pg_foreign_server', 'pg_foreign_table', 'pg_index', 'pg_inherits', 'pg_language', 'pg_largeobject', 'pg_largeobject_metadata', 'pg_namespace', 'pg_opclass', 'pg_operator', 'pg_opfamily', 'pg_pltemplate', 'pg_policy', 'pg_proc', 'pg_range', 'pg_replication_origin', 'pg_rewrite', 'pg_seclabel', 'pg_shdepend', 'pg_shdescription', 'pg_shseclabel', 'pg_statistic', 'pg_tablespace', 'pg_transform', 'pg_trigger', 'pg_ts_config', 'pg_ts_config_map', 'pg_ts_dict', 'pg_ts_parser', 'pg_ts_template', 'pg_type', 'pg_user_mapping', 'sql_features', 'sql_implementation_info', 'sql_languages', 'sql_packages', 'sql_parts', 'sql_sizing', 'sql_sizing_profiles', 'table_activate_date_list', 'table_activate_num', 'table_activate_num_daily_total', 'table_activate_num_fake', 'table_activate_num_ids', 'table_country_list', 'table_daily_active_2016_05_29', 'table_daily_active_2016_05_30', 'table_daily_active_2016_05_31', 'table_daily_active_2016_06_10', 'table_daily_active_2016_06_11', 'table_daily_active_2016_06_12', 'table_daily_active_2016_06_13', 'table_daily_active_2016_06_14', 'table_daily_active_2016_06_15', 'table_daily_active_2016_06_16', 'table_daily_active_2016_06_17', 'table_daily_active_2016_06_18', 'table_daily_active_2016_06_19', 'table_daily_active_2016_06_20', 'table_daily_active_2016_06_21', 'table_daily_active_2016_06_22', 'table_daily_active_2016_06_23', 'table_daily_active_2016_06_24', 'table_daily_active_2016_06_25', 'table_daily_active_2016_06_26', 'table_daily_active_2016_06_27', 'table_daily_active_2016_06_28', 'table_daily_active_2016_06_29', 'table_daily_active_2016_06_30', 'table_daily_active_2016_07_01', 'table_daily_active_2016_07_02', 'table_daily_active_2016_07_03', 'table_daily_active_2016_07_04', 'table_daily_active_2016_07_05', 'table_daily_active_2016_07_06', 'table_daily_active_2016_07_07', 'table_daily_active_2016_07_08', 'table_daily_active_2016_07_09', 'table_daily_active_2016_08_29', 'table_daily_active_2016_08_30', 'table_daily_active_2016_09_03', 'table_daily_active_2016_09_04', 'table_daily_active_2016_09_05', 'table_daily_active_2016_09_06', 'table_daily_active_2016_09_13', 'table_daily_active_2016_09_14', 'table_daily_active_2016_11_22', 'table_daily_active_2016_11_23', 'table_daily_active_2016_11_28', 'table_daily_active_2016_12_05', 'table_daily_active_2016_12_06', 'table_daily_active_2016_12_14', 'table_daily_active_2016_12_18', 'table_daily_active_2016_12_19', 'table_daily_active_2016_12_27', 'table_daily_active_2016_12_28', 'table_daily_active_2016_12_29', 'table_daily_active_2016_12_30', 'table_daily_active_2017_01_07', 'table_daily_active_2017_01_08', 'table_daily_active_2017_01_12', 'table_daily_active_2017_01_13', 'table_daily_active_2017_01_21', 'table_daily_active_2017_01_22', 'table_daily_active_2017_01_23', 'table_daily_active_2017_01_24', 'table_daily_active_2017_01_25', 'table_daily_active_2017_02_13', 'table_daily_active_2017_02_14', 'table_login_time', 'table_menues', 'table_permission', 'table_proj', 'table_role', 'table_user']
 
     for item in arr:
         if item.count("table_daily_active_")!=0:
@@ -1277,7 +1299,7 @@ def put_daily_active_total_2016():
             results_sql_get_num = cur.fetchall()
             close_pgconn(cur,conn)  
 
-            sql = "insert into table_activate_num_daily_total(date_s,proj_name,total_num) values('"+date_replace+"','Sherlock',"+str(results_sql_get_num[0][0])+")"
+            sql = "insert into table_activate_num_daily_total(date_s,proj_name,total_num) values('"+date_replace+"','Tripics',"+str(results_sql_get_num[0][0])+")"
             cur,conn = get_pgconn()
             cur.execute(sql)
             commit_conn(conn)   
@@ -1747,6 +1769,7 @@ def get_tongji_to_frontpage(user_name,date_range):
 
     #print date_from
     #print date_to
+
     cur,conn = get_pgconn()
     sql_get_type = "select user_type ,related_projs from table_user where user_name='"+user_name+"'"
     cur.execute(sql_get_type)
@@ -1761,13 +1784,37 @@ def get_tongji_to_frontpage(user_name,date_range):
     else:
         proj_id_col = "nothing"
 
+    # ######get total duli begin
+    # if results_get_type[0][0]=='客户' or results_get_type[0][0]=='商务':
+    #     # group by date
+    #     # sql_get_totalduli_ids = "select c.proj_name,count(c.id) from table_proj b  join table_activate_num_ids c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+" and c.proj_name='"+item[0]+"' group by c.proj_name"                 
+    #     sql_get_totalduli_ids = "select count(c.id) from table_proj b  join table_activate_num_ids c on b.proj_name=c.proj_name  where c.date_s<='" +date_to+"'"
+    # else:
+    #     # group by date
+    #     # sql_get_totalduli_ids = "select c.proj_name,count(c.id) from table_activate_num_ids c  where c.proj_name='"+item[0]+"' group by c.proj_name"  
+    #     sql_get_totalduli_ids = "select count(c.id) from table_activate_num_ids c  where c.date_s<='" +date_to+"'"
+        
+    # cur,conn = get_pgconn()
+    # cur.execute(sql_get_totalduli_ids)
+    # results_get_totalduli_ids = cur.fetchall()
+    # close_pgconn(cur,conn)  
+
+    # if results_get_totalduli_ids!=[]:
+    #     total_duli_s = results_get_totalduli_ids[0][0]
+    # else:
+    #     total_duli_s = 0
+
+    # ######get total duli over
+
     if results_get_type[0][0]=='客户' or results_get_type[0][0]=='商务':
-        # if fil == True:
-        sql_get_duli_ids = "select c.proj_name,count(c.id) from table_proj b  join table_activate_num_ids c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+" and c.date_s>='"+date_from+"' and c.date_s<='" +date_to+ "' group by c.proj_name"
-        # else:
-        # sql_get_duli_ids = "select c.proj_name,count(c.id) from table_proj b  join table_activate_num_ids c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+ "  group by c.proj_name"        
+        # group by date 
+        # sql_get_duli_ids = "select c.proj_name,count(c.id) from table_proj b  join table_activate_num_ids c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+" and c.date_s>='"+date_from+"' and c.date_s<='" +date_to+ "' group by c.proj_name"
+        sql_get_duli_ids = "select c.date_s,count(c.id) from table_proj b  join table_activate_num_ids c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+" and c.date_s>='"+date_from+"' and c.date_s<='" +date_to+ "' group by c.date_s order  by c.date_s desc"
+ 
     else:
-        sql_get_duli_ids = "select c.proj_name,count(c.id) from table_activate_num_ids c  where c.date_s>='"+date_from+"' and c.date_s<='" +date_to+ "' group by c.proj_name"
+        # group by date
+        # sql_get_duli_ids = "select c.proj_name,count(c.id) from table_activate_num_ids c  where c.date_s>='"+date_from+"' and c.date_s<='" +date_to+ "' group by c.proj_name"
+        sql_get_duli_ids = "select c.date_s,count(c.id) from table_activate_num_ids c  where c.date_s>='"+date_from+"' and c.date_s<='" +date_to+ "' group by c.date_s order by c.date_s desc"
 
     cur,conn = get_pgconn()
     #sql_get_act = "select proj_name,date_s,act_num from table_activate_num where proj_id=" + str(proj_id)+" and date_s>='"+date_from+"' and date_s<='" +date_to+ "' order by date_s desc"
@@ -1780,12 +1827,16 @@ def get_tongji_to_frontpage(user_name,date_range):
     result_str = ""
     
     if results_get_duli_ids!=[]:
-        for item in results_get_duli_ids:
+        for index,item in enumerate(results_get_duli_ids):
 
             if results_get_type[0][0]=='客户' or results_get_type[0][0]=='商务':
-                sql_get_dailyactive = "select c.proj_name,sum(c.total_num) from table_proj b  join table_activate_num_daily_total c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+" and c.date_s>='"+date_from+"' and c.date_s<='" +date_to+"' and c.proj_name='"+item[0]+ "' group by c.proj_name"
+                # group by date
+                # sql_get_dailyactive = "select c.proj_name,sum(c.total_num) from table_proj b  join table_activate_num_daily_total c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+" and c.date_s>='"+date_from+"' and c.date_s<='" +date_to+"' and c.proj_name='"+item[0]+ "' group by c.proj_name"                
+                sql_get_dailyactive = "select c.date_s,sum(c.total_num) from table_proj b  join table_activate_num_daily_total c on b.proj_name=c.proj_name  where c.date_s='"+item[0]+"' and b.proj_id in "+proj_id_col+" and c.date_s>='"+date_from+"' and c.date_s<='" +date_to+"'  group by c.date_s order  by c.date_s desc"
             else:
-                sql_get_dailyactive = "select c.proj_name,sum(c.total_num) from table_activate_num_daily_total c where c.date_s>='"+date_from+"' and c.date_s<='" +date_to+"' and c.proj_name='"+item[0]+"' group by c.proj_name "
+                # group by date
+                # sql_get_dailyactive = "select c.proj_name,sum(c.total_num) from table_activate_num_daily_total c where c.date_s>='"+date_from+"' and c.date_s<='" +date_to+"' and c.proj_name='"+item[0]+"' group by c.proj_name "                
+                sql_get_dailyactive = "select c.date_s,sum(c.total_num) from table_activate_num_daily_total c where  c.date_s='"+item[0]+"' and  c.date_s>='"+date_from+"' and c.date_s<='" +date_to+"'  group by c.date_s  order  by c.date_s desc"
 
             cur,conn = get_pgconn()
             #sql_get_act = "select proj_name,date_s,act_num from table_activate_num where proj_id=" + str(proj_id)+" and date_s>='"+date_from+"' and date_s<='" +date_to+ "' order by date_s desc"
@@ -1796,7 +1847,9 @@ def get_tongji_to_frontpage(user_name,date_range):
 
 
             each_result = {}
-            each_result['proj_name'] = item[0]
+            # group by date
+            # each_result['proj_name'] = item[0]
+            each_result['proj_name'] = "Tripics"
             if results_get_dailyactive!=[]:
                 each_result['active'] = results_get_dailyactive[0][1]
             else:
@@ -1810,9 +1863,13 @@ def get_tongji_to_frontpage(user_name,date_range):
 
             #each_result['lively_num'] = int(results[0][0]*each_result['rate'])      
             if results_get_type[0][0]=='客户' or results_get_type[0][0]=='商务':
-                sql_get_totalactive = "select c.proj_name,sum(c.total_num) from table_proj b  join table_activate_num_daily_total c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+" and c.proj_name='"+item[0]+ "' group by c.proj_name"
+                # group by date
+                # sql_get_totalactive = "select c.proj_name,sum(c.total_num) from table_proj b  join table_activate_num_daily_total c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+" and c.proj_name='"+item[0]+ "' group by c.proj_name"
+                sql_get_totalactive = "select c.date_s,sum(c.total_num) from table_proj b  join table_activate_num_daily_total c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+"  group by c.date_s order  by c.date_s desc"                
             else:
-                sql_get_totalactive = "select c.proj_name,sum(c.total_num) from table_activate_num_daily_total c where c.proj_name='"+item[0]+"' group by c.proj_name "            
+                # group by date
+                # sql_get_totalactive = "select c.proj_name,sum(c.total_num) from table_activate_num_daily_total c where c.proj_name='"+item[0]+"' group by c.proj_name "                
+                sql_get_totalactive = "select c.date_s,sum(c.total_num) from table_activate_num_daily_total c group by c.date_s  order  by c.date_s desc"            
 
             cur,conn = get_pgconn()
             #sql_get_act = "select proj_name,date_s,act_num from table_activate_num where proj_id=" + str(proj_id)+" and date_s>='"+date_from+"' and date_s<='" +date_to+ "' order by date_s desc"
@@ -1823,7 +1880,29 @@ def get_tongji_to_frontpage(user_name,date_range):
 
             each_result['total_active'] = results_get_totalactive[0][1]
 
-            result_str = result_str+'{"proj_name":"' + each_result['proj_name'] +'",'+'"daily_active":"' + str(each_result['active']) + '","duli":"' + str(each_result['duli']) +'",' + '"total_active":"'+str(each_result['total_active'])+ '"},'
+            ######get total duli begin
+            if results_get_type[0][0]=='客户' or results_get_type[0][0]=='商务':
+                # group by date
+                # sql_get_totalduli_ids = "select c.proj_name,count(c.id) from table_proj b  join table_activate_num_ids c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+" and c.proj_name='"+item[0]+"' group by c.proj_name"                 
+                sql_get_totalduli_ids = "select count(c.id) from table_proj b  join table_activate_num_ids c on b.proj_name=c.proj_name  where c.date_s<='" +str(item[0])+"'"
+            else:
+                # group by date
+                # sql_get_totalduli_ids = "select c.proj_name,count(c.id) from table_activate_num_ids c  where c.proj_name='"+item[0]+"' group by c.proj_name"  
+                sql_get_totalduli_ids = "select count(c.id) from table_activate_num_ids c  where c.date_s<='" +str(item[0])+"'"
+                
+            cur,conn = get_pgconn()
+            cur.execute(sql_get_totalduli_ids)
+            results_get_totalduli_ids = cur.fetchall()
+            close_pgconn(cur,conn)  
+
+            if results_get_totalduli_ids!=[]:
+                total_duli_s = results_get_totalduli_ids[0][0]
+            else:
+                total_duli_s = 0
+
+            ######get total duli over
+
+            result_str = result_str+'{"proj_name":"' + each_result['proj_name'] +'",'+'"daily_active":"' + str(each_result['active']) + '","duli":"' + str(each_result['duli']) +'",' + '"total_active":"'+str(each_result['total_active']) + '","total_duli":"'+ str(total_duli_s) +'","date":"'+str(item[0])+'"},'
     else:
         if results_get_type[0][0]=='客户' or results_get_type[0][0]=='商务':
             sql_get_today_none = "select b.proj_name from table_proj b where b.proj_id in "+proj_id_col
@@ -1838,9 +1917,13 @@ def get_tongji_to_frontpage(user_name,date_range):
         if results_get_today_none!=[]:
             for item in results_get_today_none:            
                 if results_get_type[0][0]=='客户' or results_get_type[0][0]=='商务':
-                    sql_get_dailyactive = "select c.proj_name,sum(c.total_num) from table_proj b  join table_activate_num_daily_total c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+" and c.date_s>='"+date_from+"' and c.date_s<='" +date_to+"' and c.proj_name='"+item[0]+ "' group by c.proj_name"
+                    # group by date
+                    # sql_get_dailyactive = "select c.proj_name,sum(c.total_num) from table_proj b  join table_activate_num_daily_total c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+" and c.date_s>='"+date_from+"' and c.date_s<='" +date_to+"' and c.proj_name='"+item[0]+ "' group by c.proj_name"
+                    sql_get_dailyactive = "select c.date_s,sum(c.total_num) from table_proj b  join table_activate_num_daily_total c on b.proj_name=c.proj_name  where  c.date_s='"+item[0]+"' and b.proj_id in "+proj_id_col+" and c.date_s>='"+date_from+"' and c.date_s<='" +date_to+"' group by c.date_s order  by c.date_s desc"                    
                 else:
-                    sql_get_dailyactive = "select c.proj_name,sum(c.total_num) from table_activate_num_daily_total c where c.date_s>='"+date_from+"' and c.date_s<='" +date_to+"' and c.proj_name='"+item[0]+"' group by c.proj_name "            
+                    # group by date
+                    # sql_get_dailyactive = "select c.proj_name,sum(c.total_num) from table_activate_num_daily_total c where c.date_s>='"+date_from+"' and c.date_s<='" +date_to+"' and c.proj_name='"+item[0]+"' group by c.proj_name "    
+                    sql_get_dailyactive = "select c.date_s,sum(c.total_num) from table_activate_num_daily_total c where c.date_s='"+item[0]+"' and  c.date_s>='"+date_from+"' and c.date_s<='" +date_to+"'  group by c.date_s  order  by c.date_s desc"                             
 
                 cur,conn = get_pgconn()
                 #sql_get_act = "select proj_name,date_s,act_num from table_activate_num where proj_id=" + str(proj_id)+" and date_s>='"+date_from+"' and date_s<='" +date_to+ "' order by date_s desc"
@@ -1851,7 +1934,9 @@ def get_tongji_to_frontpage(user_name,date_range):
 
 
                 each_result = {}
-                each_result['proj_name'] = item[0]
+                # group by date
+                # each_result['proj_name'] = item[0]
+                each_result['proj_name'] = "Tripics"
                 if results_get_dailyactive!=[]:
                     each_result['active'] = results_get_dailyactive[0][1]
                 else:
@@ -1866,9 +1951,13 @@ def get_tongji_to_frontpage(user_name,date_range):
                 #each_result['lively_num'] = int(results[0][0]*each_result['rate'])      
 
                 if results_get_type[0][0]=='客户' or results_get_type[0][0]=='商务':
-                    sql_get_totalactive = "select c.proj_name,sum(c.total_num) from table_proj b  join table_activate_num_daily_total c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+" and c.proj_name='"+item[0]+ "' group by c.proj_name"
+                    # group by date
+                    # sql_get_totalactive = "select c.proj_name,sum(c.total_num) from table_proj b  join table_activate_num_daily_total c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+" and c.proj_name='"+item[0]+ "' group by c.proj_name"
+                    sql_get_totalactive = "select c.date_s,sum(c.total_num) from table_proj b  join table_activate_num_daily_total c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+"  group by c.date_s order by c.date_s desc"                    
                 else:
-                    sql_get_totalactive = "select c.proj_name,sum(c.total_num) from table_activate_num_daily_total c where c.proj_name='"+item[0]+"' group by c.proj_name "            
+                    # group by date
+                    # sql_get_totalactive = "select c.proj_name,sum(c.total_num) from table_activate_num_daily_total c where c.proj_name='"+item[0]+"' group by c.proj_name "       
+                    sql_get_totalactive = "select c.date_s,sum(c.total_num) from table_activate_num_daily_total c  group by c.date_s  order  by c.date_s desc"                          
 
                 cur,conn = get_pgconn()
                 #sql_get_act = "select proj_name,date_s,act_num from table_activate_num where proj_id=" + str(proj_id)+" and date_s>='"+date_from+"' and date_s<='" +date_to+ "' order by date_s desc"
@@ -1877,9 +1966,60 @@ def get_tongji_to_frontpage(user_name,date_range):
                 results_get_totalactive = cur.fetchall()
                 close_pgconn(cur,conn)  
 
-                each_result['total_active'] = results_get_totalactive[0][1]
+                print sql_get_totalactive
 
-                result_str = result_str+'{"proj_name":"' + each_result['proj_name'] +'",'+'"daily_active":"' + str(each_result['active']) + '","duli":"' + str(each_result['duli']) +'",' + '"total_active":"'+str(each_result['total_active'])+'"},'
+                if results_get_totalactive!=[]:
+                    each_result['total_active'] = results_get_totalactive[0][1]
+                else:
+                    each_result['total_active'] = 0
+
+                # ######get total duli begin
+                # if results_get_type[0][0]=='客户' or results_get_type[0][0]=='商务':
+                #     # group by date
+                #     # sql_get_totalduli_ids = "select c.proj_name,count(c.id) from table_proj b  join table_activate_num_ids c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+" and c.proj_name='"+item[0]+"' group by c.proj_name"        
+                #     sql_get_totalduli_ids = "select c.date_s,count(c.id) from table_proj b  join table_activate_num_ids c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+"  group by c.date_s order by c.date_s desc"                    
+                # else:
+                #     # group by date
+                #     # sql_get_totalduli_ids = "select c.proj_name,count(c.id) from table_activate_num_ids c  where c.proj_name='"+item[0]+"' group by c.proj_name"       
+                #     sql_get_totalduli_ids = "select c.date_s,count(c.id) from table_activate_num_ids c   group by c.date_s order by c.date_s desc"                          
+                # cur,conn = get_pgconn()
+                # cur.execute(sql_get_totalduli_ids)
+                # results_get_totalduli_ids = cur.fetchall()
+                # close_pgconn(cur,conn)  
+
+                # if results_get_totalduli_ids!=[]:
+                #     each_result['total_duli'] = results_get_totalduli_ids[0][1]
+                # else:
+                #     each_result['total_duli'] = 0
+
+                # ######get total duli over
+                
+                ######get total duli begin
+                if results_get_type[0][0]=='客户' or results_get_type[0][0]=='商务':
+                    # group by date
+                    # sql_get_totalduli_ids = "select c.proj_name,count(c.id) from table_proj b  join table_activate_num_ids c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+" and c.proj_name='"+item[0]+"' group by c.proj_name"                 
+                    sql_get_totalduli_ids = "select count(c.id) from table_proj b  join table_activate_num_ids c on b.proj_name=c.proj_name  where c.date_s<='" +str(results_get_dailyactive[0][0])+"'"
+                else:
+                    # group by date
+                    # sql_get_totalduli_ids = "select c.proj_name,count(c.id) from table_activate_num_ids c  where c.proj_name='"+item[0]+"' group by c.proj_name"  
+                    sql_get_totalduli_ids = "select count(c.id) from table_activate_num_ids c  where c.date_s<='" +str(results_get_dailyactive[0][0])+"'"
+                    
+                cur,conn = get_pgconn()
+                cur.execute(sql_get_totalduli_ids)
+                results_get_totalduli_ids = cur.fetchall()
+                close_pgconn(cur,conn)  
+
+                if results_get_totalduli_ids!=[]:
+                    total_duli_s = results_get_totalduli_ids[0][0]
+                else:
+                    total_duli_s = 0
+
+                ######get total duli over                
+
+                # now_total_duli = total_duli_s - item[1]
+
+                if results_get_dailyactive!=[]:
+                    result_str = result_str+'{"proj_name":"' + each_result['proj_name'] +'",'+'"daily_active":"' + str(each_result['active']) + '","duli":"' + str(each_result['duli']) +'",' + '"total_active":"'+str(each_result['total_active']) + '","total_duli":"'+ str(total_duli_s)+'","date":"'+str(results_get_dailyactive[0][0])+'"},'
 
     result_str = result_str[0:int(len(result_str))-1]    
     result_str = '{"allData":[' + result_str +']}'        
