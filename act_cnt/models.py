@@ -1216,11 +1216,14 @@ def insert_formatted_data_to_db_pass_new_2017():
                         sql_insert_act = "insert into "+daily_table+"(imsi,imei,android_id,wifi_mac,date_s,proj_name) values('"+ imsi + "','" + imei + "','" + android_id + "','" + wifi_mac +"','"+time+"','"+proj_name+"')"             
                         cur.execute(sql_insert_act)
                         commit_conn(conn)   
-                        close_pgconn(cur,conn)            
+                        close_pgconn(cur,conn)        
+
+        f.close()
+        os.remove(f_name_tar + "_files/"+file)      
 
     #os.remove(file_name)
     #os.remove(f_name_tar)
-    shutil.rmtree(f_name_tar + "_files/")
+    #shutil.rmtree(f_name_tar + "_files/")
 
     print daily_table_list
 
