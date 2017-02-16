@@ -99,8 +99,9 @@ def get_map_data(request):
 def get_tongji_to_frontpage(request):
     user_name = request.GET.get('user_name')
     cb_mine = request.GET.get('_cb_mine')
-    date_range = request.GET.get('value')
-    result_item = cb_mine+"("+models.get_tongji_to_frontpage(user_name,date_range)+")"
+    date_1 = request.GET.get('value1')
+    date_2 = request.GET.get('value2')
+    result_item = cb_mine+"("+models.get_tongji_to_frontpage(user_name,date_1,date_2)+")"
     #print result_item
     #return HttpResponse(json.dumps(result_item,ensure_ascii=False), content_type="application/json") 
     return HttpResponse(result_item, content_type="text/plain") 

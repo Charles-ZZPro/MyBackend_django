@@ -1715,17 +1715,22 @@ def get_rolemenues_info():
     #return "OK"
 
 #interface to get tongji data to frontpage
-def get_tongji_to_frontpage(user_name,date_range):
+def get_tongji_to_frontpage(user_name,date_1,date_2):
+
+    # print date_1
+    # print date_2
     #print date_range
 
-    date_range_array = date_range.split(",")
+    date_range_array=[]
+    date_range_array.append(date_1)
+    date_range_array.append(date_2)
     date_range_box = []
     date_from = ""
     date_to = ""
 
     fil = False
 
-    if date_range!="undefined" and date_range!="":
+    if date_1!="undefined" and date_1!="" and date_2!="undefined" and date_2!="" and date_1!="first" and date_2!="first":
         fil = True
         for j in date_range_array:
             date_array = j.split(' ')
@@ -1763,12 +1768,14 @@ def get_tongji_to_frontpage(user_name,date_range):
         date_to = date_range_box[1]
     else:
         now = datetime.datetime.now()
-        date_str = now.strftime('%Y-%m-%d')  
-        date_from = date_str
-        date_to = date_str + " 23:59:59"
+        one_week_ago = now - datetime.timedelta(days=7)
+        date_str = now.strftime('%Y-%m-%d') 
+        date_str_one_week_ago = one_week_ago.strftime('%Y-%m-%d')  
+        date_from = date_str_one_week_ago
+        date_to = date_str
 
-    #print date_from
-    #print date_to
+    # print date_from
+    # print date_to
 
     cur,conn = get_pgconn()
     sql_get_type = "select user_type ,related_projs from table_user where user_name='"+user_name+"'"
@@ -1776,8 +1783,8 @@ def get_tongji_to_frontpage(user_name,date_range):
     results_get_type = cur.fetchall()
     close_pgconn(cur,conn) 
 
-    print "fdddd"
-    print str(results_get_type[0][1])
+    # print "fdddd"
+    # print str(results_get_type[0][1])
 
     if str(results_get_type[0][1])!="None":
         proj_id_col = "("+results_get_type[0][1]+")"
@@ -1993,26 +2000,27 @@ def get_tongji_to_frontpage(user_name,date_range):
                 #     each_result['total_duli'] = 0
 
                 # ######get total duli over
-                
-                ######get total duli begin
-                if results_get_type[0][0]=='客户' or results_get_type[0][0]=='商务':
-                    # group by date
-                    # sql_get_totalduli_ids = "select c.proj_name,count(c.id) from table_proj b  join table_activate_num_ids c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+" and c.proj_name='"+item[0]+"' group by c.proj_name"                 
-                    sql_get_totalduli_ids = "select count(c.id) from table_proj b  join table_activate_num_ids c on b.proj_name=c.proj_name  where c.date_s<='" +str(results_get_dailyactive[0][0])+"'"
-                else:
-                    # group by date
-                    # sql_get_totalduli_ids = "select c.proj_name,count(c.id) from table_activate_num_ids c  where c.proj_name='"+item[0]+"' group by c.proj_name"  
-                    sql_get_totalduli_ids = "select count(c.id) from table_activate_num_ids c  where c.date_s<='" +str(results_get_dailyactive[0][0])+"'"
-                    
-                cur,conn = get_pgconn()
-                cur.execute(sql_get_totalduli_ids)
-                results_get_totalduli_ids = cur.fetchall()
-                close_pgconn(cur,conn)  
 
-                if results_get_totalduli_ids!=[]:
-                    total_duli_s = results_get_totalduli_ids[0][0]
-                else:
-                    total_duli_s = 0
+                ######get total duli begin
+                if results_get_dailyactive!=[]:
+                    if results_get_type[0][0]=='客户' or results_get_type[0][0]=='商务':
+                        # group by date
+                        # sql_get_totalduli_ids = "select c.proj_name,count(c.id) from table_proj b  join table_activate_num_ids c on b.proj_name=c.proj_name  where b.proj_id in "+proj_id_col+" and c.proj_name='"+item[0]+"' group by c.proj_name"                 
+                        sql_get_totalduli_ids = "select count(c.id) from table_proj b  join table_activate_num_ids c on b.proj_name=c.proj_name  where c.date_s<='" +str(results_get_dailyactive[0][0])+"'"
+                    else:
+                        # group by date
+                        # sql_get_totalduli_ids = "select c.proj_name,count(c.id) from table_activate_num_ids c  where c.proj_name='"+item[0]+"' group by c.proj_name"  
+                        sql_get_totalduli_ids = "select count(c.id) from table_activate_num_ids c  where c.date_s<='" +str(results_get_dailyactive[0][0])+"'"
+                        
+                    cur,conn = get_pgconn()
+                    cur.execute(sql_get_totalduli_ids)
+                    results_get_totalduli_ids = cur.fetchall()
+                    close_pgconn(cur,conn)  
+
+                    if results_get_totalduli_ids!=[]:
+                        total_duli_s = results_get_totalduli_ids[0][0]
+                    else:
+                        total_duli_s = 0
 
                 ######get total duli over                
 
@@ -2025,7 +2033,7 @@ def get_tongji_to_frontpage(user_name,date_range):
     result_str = '{"allData":[' + result_str +']}'        
     #print result_item
     #return HttpResponse("<p>"+str(result_item)+"</p>")
-    print result_str
+    #print result_str
     return result_str  
 
 #insert daily active num for frontpage display
