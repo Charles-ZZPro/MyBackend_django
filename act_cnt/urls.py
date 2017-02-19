@@ -20,9 +20,12 @@ urlpatterns = [
     url(r'^insert_formatted_data_to_db/$', views.insert_formatted_data_to_db),  
     url(r'^create_new_table_for_daily_active/$', views.create_new_table_for_daily_active), 
     url(r'^insert_all_daily_data/$', views.insert_all_daily_data),          
-    url(r'^insert_formatted_data_to_db_imsi/$', views.insert_formatted_data_to_db_imsi),           
+    url(r'^insert_formatted_data_to_db_imsi/$', views.insert_formatted_data_to_db_imsi), 
+    url(r'^change_related_project/$', views.change_related_project),    
+              
 #############
     url(r'^get_tongji_to_frontpage/$', views.get_tongji_to_frontpage),  
+    url(r'^get_tongji_to_frontpage_proj/$', views.get_tongji_to_frontpage_proj),     
     url(r'^get_user_info_list/$', views.get_user_info_list),
     url(r'^put_logintime/$', views.put_logintime),  
     url(r'^get_user_logintime_list/$', views.get_user_logintime_list),

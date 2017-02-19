@@ -136,8 +136,12 @@
     </el-dialog>
     <el-dialog title="关联项目" v-model="dialogRelatedperfect">
       <el-col :span="24" class="relatedPro">请选择关联的项目</el-col>
-      <el-checkbox-group v-model="checkList">
-        <el-checkbox v-for="role in selectProj" :label="role.proj_name"></el-checkbox>
+
+      <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+
+      <div style="margin: 15px 0;"></div>
+      <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">      
+        <el-checkbox v-for="city in selectProj" :label="city">{{city}}</el-checkbox>
 <!--         <el-checkbox label="项目1"></el-checkbox>
         <el-checkbox label="项目2"></el-checkbox>
         <el-checkbox label="项目3"></el-checkbox>
@@ -152,7 +156,7 @@
       <el-row class="passInterval">
         <el-col :span="6">输入备注</el-col>
         <el-col :span="12">
-          <el-input placeholder="请输入备注" type='password' v-model="comment_c"></el-input>
+          <el-input placeholder="请输入备注" v-model="comment_c"></el-input>
         </el-col>
       </el-row>
       <div slot="footer" class="dialog-footer">
@@ -181,6 +185,9 @@
         dialogChangepermiss:false,
         dialogRelatedperfect:false,
         dialogChangecomment:false,
+        checkAll: false,
+        checkedCities: [],
+        isIndeterminate: false ,       
         pass:'',
         rePass:'',
         showWrong:false,
@@ -312,6 +319,7 @@
       },
       submitRelated:function () {
         this.dialogRelatedperfect=false
+        this.getCustomersFilter_change_projs()
       },
       exitRelated:function () {
         this.dialogRelatedperfect=false
@@ -421,7 +429,7 @@
       getCustomersFilter_change_projs: function() {
           //var _msg=JSON.parse(sessionStorage.getItem('_obj'))
           // var username = "null"
-          var apiUrl_local = this.apiUrl_change_projs + "user_name=" + this.info.user_name
+          var apiUrl_local = this.apiUrl_change_projs + "arr_projs=" + this.checkedCities +"&user_name="+this.info.user_name
           this.$http.jsonp(apiUrl_local,
               {
                   jsonp:'_cb_mine'
@@ -440,7 +448,25 @@
               }, function(response) {
                   console.log("my site para detail  filtering   JSON fucked")
               })
-      },               
+      },   
+      handleCheckAllChange(event) {
+        this.cityOptions = this.selectProj
+        this.cities = this.selectProj
+        this.checkedCities = event.target.checked ? this.cityOptions : [];
+        this.isIndeterminate = false;
+
+        alert(this.checkedCities)
+      },
+      handleCheckedCitiesChange(value) {
+        this.cityOptions = this.selectProj
+        this.cities = this.selectProj
+        let checkedCount = value.length;
+        this.checkAll = checkedCount === this.cities.length;
+        this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
+
+        alert(this.checkedCities)
+
+      }                  
     },
     created:function () {
       var _this=this      

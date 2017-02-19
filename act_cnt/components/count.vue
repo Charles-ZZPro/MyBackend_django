@@ -10,9 +10,22 @@
     width:80%;
     color: #475669
   }
+  .zh-select{
+    width: 300px;
+    position: absolute;
+    top: 0px;
+    right: 670px;
+  }
+  .filterData{
+    position: absolute;
+    top: 0;
+    right: 600px
+  }
 </style>
 <template>
   <div id="count">
+
+
     <div class="block time">
 <!--       <el-date-picker v-model="timeSelect" type="daterange"></el-date-picker> -->
 <!--         <el-date-picker
@@ -20,6 +33,7 @@
           type="daterange"
           placeholder="选择日期范围" style="width: 300px">
         </el-date-picker> -->
+        
       <span class="demonstration">起始:</span>
       <el-date-picker
         v-model="value1"
@@ -34,7 +48,21 @@
         type="date"
         placeholder="选择日期"
         :picker-options="pickerOptions1">
-      </el-date-picker>          
+      </el-date-picker>   
+
+      <span class="demonstration">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>
+      <span class="demonstration">选择项目:</span>
+<!--       <el-col :span="5"> -->
+        <el-select v-model="value" placeholder="请选择" @change="proj_sel" class='zh-select'>
+          <el-option
+            v-for="item in selectProj"
+            :label="item"
+            :value="item">
+          </el-option>
+        </el-select>
+<!--       </el-col> -->
+
+
     <el-button v-on:click="getCustomersFilter" class='filterData'>筛选</el-button>        
     </div>
     <el-table :data="countData" class="countTable" >
@@ -80,6 +108,9 @@
         value1:"",
         value2:"",
         total:0,
+        selectProj:
+        [],
+        value:"",
         countData:
         [],
         allData:
@@ -117,12 +148,37 @@
         //   {project:'项目3',newAdd:'6765',newAdduser:'6643'},
         //   {project:'项目4',newAdd:'75455',newAdduser:'12311'},
         // ]
-        //apiUrl_filter: 'http://120.77.179.136:8099/act_cnt/get_tongji_to_frontpage?',    
+        //apiUrl_filter: 'http://120.77.179.136:8099/act_cnt/get_tongji_to_frontpage?',   
+        //apiUrl_projs: 'http://120.77.179.136:8099/act_cnt/get_projs?', 
         apiUrl_filter: 'http://localhost:8099/act_cnt/get_tongji_to_frontpage?', 
-        //apiUrl_filter_newdailyactive: 'http://localhost:8099/act_cnt/put_daily_active?',   
+        apiUrl_filter_proj: 'http://localhost:8099/act_cnt/get_tongji_to_frontpage_proj?', 
+        apiUrl_projs: 'http://localhost:8099/act_cnt/get_projs?',
       }
     },
     methods:{
+      getCustomersFilter_projs: function() {
+          //var _msg=JSON.parse(sessionStorage.getItem('_obj'))
+          // var username = "null"
+          var apiUrl_local = this.apiUrl_projs
+          this.$http.jsonp(apiUrl_local,
+              {
+                  jsonp:'_cb_mine'
+              }
+              )
+              .then(function(response) {
+                  console.log("fdadafffffffff")
+                  this.selectProj = response.data.allData
+                  //this.tableData=this.allData.slice(0,7)
+                  //this.total=this.allData.length
+                  //this.currentPage = 1
+                  //this.pageSize = 7
+                  console.log("para detail filtering   not fucked")
+                  console.log(this.countData)
+                  console.log("over")
+              }, function(response) {
+                  console.log("my site para detail  filtering   JSON fucked")
+              })
+      },       
       getCustomersFilter: function() {
           //var _msg=JSON.parse(sessionStorage.getItem('_obj'))
           //alert(this.value1)
@@ -137,7 +193,12 @@
           }
           else{
             var username = "WX"
-            var apiUrl_local = this.apiUrl_filter + "user_name=" + username+"&value1="+this.value1+"&value2="+this.value2
+            if(this.value==""){
+              var apiUrl_local = this.apiUrl_filter + "user_name=" + username+"&value1="+this.value1+"&value2="+this.value2+"&proj="+this.value
+            }
+            else{
+              var apiUrl_local = this.apiUrl_filter_proj + "user_name=" + username+"&value1="+this.value1+"&value2="+this.value2+"&proj="+this.value
+            }            
             this.$http.jsonp(apiUrl_local,
                 {
                     jsonp:'_cb_mine'
@@ -170,6 +231,53 @@
             }
           }
       },  
+      getCustomersFilter_projs_proj: function() {
+          //var _msg=JSON.parse(sessionStorage.getItem('_obj'))
+          //alert(this.value1)
+          if ((this.value1=="")&&(this.value2=="")){
+            alert("请选择起始日期和结束日期")
+          }
+          else if (this.value1==""){
+            alert("请选择起始日期")
+          }
+          else if (this.value2==""){
+            alert("请选择结束日期")
+          }
+          else{
+            var username = "WX"
+            var apiUrl_local = this.apiUrl_filter + "user_name=" + username+"&value1="+this.value1+"&value2="+this.value2+"&proj="+this.value
+            this.$http.jsonp(apiUrl_local,
+                {
+                    jsonp:'_cb_mine'
+                }
+                )
+                .then(function(response) {
+                    this.allData = response.data.allData;
+                    //alert(this.countData)
+                    if ((this.allData ==[])||(this.allData =="")){
+                      alert("选定日期范围内无记录")
+                    }
+                    //this.tableData=this.allData.slice(0,7)
+                    //this.total=this.allData.length
+                    //this.currentPage = 1
+                    //this.pageSize = 7
+                    this.countData=this.allData.slice(0,7)
+                    this.total=this.allData.length
+                    //alert(this.total)
+                    this.currentPage = 1
+                    this.pageSize = 7                    
+                    console.log("para detail filtering   not fucked")
+                    console.log(this.countData)
+                    console.log("over")
+                }, function(response) {
+                    console.log("my site para detail  filtering   JSON fucked")
+                })
+            if(this.value1=="first"){
+              this.value1=""
+              this.value2=""
+            }
+          }
+      },        
       getCustomersFilter_put_newaddDA: function() {
           //var _msg=JSON.parse(sessionStorage.getItem('_obj'))
           // var username = "null"
@@ -198,7 +306,10 @@
         var endCount=val*this.pageSize
         var startCount=this.pageSize*(val-1)
         this.countData=this.allData.slice(startCount,endCount)
-      }               
+      },
+      proj_sel:function (value) {
+        return  value
+      }
     },
     created:function(){
       var _this=this
@@ -210,6 +321,7 @@
              _this.value2 = "first"
             //alert(_this.value1)
             _this.getCustomersFilter()
+            _this.getCustomersFilter_projs()
         },30)
     }    
   }
