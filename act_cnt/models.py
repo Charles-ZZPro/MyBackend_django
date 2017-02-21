@@ -2448,64 +2448,67 @@ def insert_subchannel_into_db():
                 # ############ 2016 passed end                
                 continue
             else:
-                ind_imsi = i.index('imsi')
-                ind_sub_channel = i.index('sub_channel')
-                ind_sub_channel_id = i.index('sub_channel_id')
-                ind_mac = i.index('mac_addr')
+                ind_imsi = i.find('imsi')
+                ind_sub_channel = i.find('sub_channel')
+                ind_sub_channel_id = i.find('sub_channel_id')
+                ind_mac = i.find('mac_addr')
 
-                imsi = i[ind_imsi+7:ind_imsi+22]
-
-                sub_channel_clip = i[ind_sub_channel:-1]
-                print sub_channel_clip
-                first_get_yinhao = str(sub_channel_clip).find('"')
-                again_get_yinhao = sub_channel_clip.find('"',14)
-                print first_get_yinhao
-                print again_get_yinhao
-
-                sub_channel_name = sub_channel_clip[first_get_yinhao+1:again_get_yinhao]
-
-                sub_channel_id_clip = i[ind_sub_channel_id:-1]
-                # first_get_yinhao_id = sub_channel_id_clip.find['"']
-                again_get_yinhao_id = sub_channel_id_clip.find(',',17)
-                sub_channel_id = sub_channel_id_clip[16:again_get_yinhao_id]
-
-                wifi_mac = i[ind_mac+11:ind_mac+28]
-                
-                print sub_channel_id_clip
-                print sub_channel_id
-                print sub_channel_name
-
-                #info_join = imsi+"$&&&#####"+imei+"$&&&#####"+android_id+"$&&&#####"+wifi_mac
-
-                ### calculating independent users
-                cur,conn= get_pgconn()
-                sql_update_sub_channel = "update table_activate_num_ids set sub_channel_name='"+sub_channel_name+"',sub_channel_id='" +sub_channel_id + "' where wifi_mac='"+wifi_mac+"'"
-                cur.execute(sql_update_sub_channel)
-                commit_conn(conn)   
-                close_pgconn(cur,conn)   
-
-
-                ### calculating daily active users
-
-                now_t = datetime.datetime.now()
-                now_str_t = now_t.strftime('%Y_%m_%d')
-                daily_table = "table_daily_active_"+now_str_t
-           
-                ############ 2016 passed start
-                daily_table = "table_daily_active_"+time_p
-                #daily_table_last = daily_table     
-                if daily_table in daily_table_list:
-                    print "daily table existed !!!!!"   
+                if ind_imsi==-1 or ind_mac==-1:
+                    continue
                 else:
-                    create_new_table_for_daily_active_pass(time_p)
-                    daily_table_last = daily_table
-                    daily_table_list.append(daily_table)
-                ############ 2016 passed end                
-                cur,conn= get_pgconn()
-                sql_update_sub_channel = "update "+daily_table+" set sub_channel_name='"+sub_channel_name+"',sub_channel_id='" +sub_channel_id + "' where wifi_mac='"+wifi_mac+"'"
-                cur.execute(sql_update_sub_channel)
-                commit_conn(conn)   
-                close_pgconn(cur,conn)  
+                    imsi = i[ind_imsi+7:ind_imsi+22]
+
+                    sub_channel_clip = i[ind_sub_channel:-1]
+                    print sub_channel_clip
+                    first_get_yinhao = str(sub_channel_clip).find('"')
+                    again_get_yinhao = sub_channel_clip.find('"',14)
+                    print first_get_yinhao
+                    print again_get_yinhao
+
+                    sub_channel_name = sub_channel_clip[first_get_yinhao+1:again_get_yinhao]
+
+                    sub_channel_id_clip = i[ind_sub_channel_id:-1]
+                    # first_get_yinhao_id = sub_channel_id_clip.find['"']
+                    again_get_yinhao_id = sub_channel_id_clip.find(',',17)
+                    sub_channel_id = sub_channel_id_clip[16:again_get_yinhao_id]
+
+                    wifi_mac = i[ind_mac+11:ind_mac+28]
+                    
+                    print sub_channel_id_clip
+                    print sub_channel_id
+                    print sub_channel_name
+
+                    #info_join = imsi+"$&&&#####"+imei+"$&&&#####"+android_id+"$&&&#####"+wifi_mac
+
+                    ### calculating independent users
+                    cur,conn= get_pgconn()
+                    sql_update_sub_channel = "update table_activate_num_ids set sub_channel_name='"+sub_channel_name+"',sub_channel_id='" +sub_channel_id + "' where wifi_mac='"+wifi_mac+"'"
+                    cur.execute(sql_update_sub_channel)
+                    commit_conn(conn)   
+                    close_pgconn(cur,conn)   
+
+
+                    ### calculating daily active users
+
+                    now_t = datetime.datetime.now()
+                    now_str_t = now_t.strftime('%Y_%m_%d')
+                    daily_table = "table_daily_active_"+now_str_t
+               
+                    ############ 2016 passed start
+                    daily_table = "table_daily_active_"+time_p
+                    #daily_table_last = daily_table     
+                    if daily_table in daily_table_list:
+                        print "daily table existed !!!!!"   
+                    else:
+                        create_new_table_for_daily_active_pass(time_p)
+                        daily_table_last = daily_table
+                        daily_table_list.append(daily_table)
+                    ############ 2016 passed end                
+                    cur,conn= get_pgconn()
+                    sql_update_sub_channel = "update "+daily_table+" set sub_channel_name='"+sub_channel_name+"',sub_channel_id='" +sub_channel_id + "' where wifi_mac='"+wifi_mac+"'"
+                    cur.execute(sql_update_sub_channel)
+                    commit_conn(conn)   
+                    close_pgconn(cur,conn)  
                        
 
         f.close()
