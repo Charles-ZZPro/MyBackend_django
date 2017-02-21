@@ -1293,7 +1293,7 @@ def insert_formatted_data_to_db_pass_new_2017():
                 continue       
 
         f.close()
-        os.remove(f_name_tar + "_files/"+file)      
+        # os.remove(f_name_tar + "_files/"+file)      
 
     #os.remove(file_name)
     #os.remove(f_name_tar)
