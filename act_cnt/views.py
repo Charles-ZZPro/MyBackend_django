@@ -4,6 +4,7 @@ from django.http import HttpResponse
 import psycopg2
 import json
 from act_cnt import models
+from django.shortcuts import render_to_response
 # Create your views here.
 
 def first_page(request):
@@ -256,6 +257,41 @@ def get_all_table_name(request):
     # proj_name = request.GET.get('proj_name')      
     return HttpResponse(models.get_all_table_name()) 
     
+def get_a(request):
+    print "fffffffff"
+    # file_name = request.GET.get('file_name')
+    # time = request.GET.get('time')    
+    # proj_name = request.GET.get('proj_name')      
+    return render_to_response('a.html')    
+
+def get_b(request):
+    print "fffffffff"
+    # file_name = request.GET.get('file_name')
+    # time = request.GET.get('time')    
+    # proj_name = request.GET.get('proj_name')      
+    return render_to_response('b.html')   
+
+def insert_subchannel_into_db(request):
+    print "fffffffff"
+    # file_name = request.GET.get('file_name')
+    # time = request.GET.get('time')    
+    # proj_name = request.GET.get('proj_name') 
+    return HttpResponse(models.insert_subchannel_into_db()) 
+
+def add_columns_to_dailyactive_tables(request):
+    print "fffffffff"
+    # file_name = request.GET.get('file_name')
+    # time = request.GET.get('time')    
+    # proj_name = request.GET.get('proj_name') 
+    return HttpResponse(models.add_columns_to_dailyactive_tables())   
+
+def add_columns_to_duli_tables(request):
+    print "fffffffff"
+    # file_name = request.GET.get('file_name')
+    # time = request.GET.get('time')    
+    # proj_name = request.GET.get('proj_name') 
+    return HttpResponse(models.add_columns_to_duli_tables())   
+       
            
 ####################
 def putting_data(request):

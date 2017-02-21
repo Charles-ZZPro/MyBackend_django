@@ -39,8 +39,12 @@ urlpatterns = [
     url(r'^put_active_datelist_into_db/$', views.put_active_datelist_into_db), 
     url(r'^put_daily_active_total_2016/$', views.put_daily_active_total_2016),  
     url(r'^insert_formatted_data_to_db_pass_new_2017/$', views.insert_formatted_data_to_db_pass_new_2017),  
-    url(r'^get_all_table_name/$', views.get_all_table_name),      
-           
+    url(r'^get_all_table_name/$', views.get_all_table_name),   
+    url(r'^get_a/$', views.get_a),   
+    url(r'^get_b/$', views.get_b),      
+    url(r'^insert_subchannel_into_db/$', views.insert_subchannel_into_db),    
+    url(r'^add_columns_to_dailyactive_tables/$', views.add_columns_to_dailyactive_tables),   
+    url(r'^add_columns_to_duli_tables/$', views.add_columns_to_duli_tables),       
 #############                
 ]
 #http://120.77.179.136/

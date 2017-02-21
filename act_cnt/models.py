@@ -727,6 +727,8 @@ def create_new_table_for_daily_active():
       'wifi_mac text,'\
       'date_s text,'\
       'proj_name text,'\
+      'sub_channel_name text,'\
+      'sub_channel_id text,'\
       'CONSTRAINT '+daily_table+'_pkey PRIMARY KEY (id))'\
       'WITH (OIDS=FALSE);'\
       'ALTER TABLE public.'+daily_table+' OWNER TO "littleAdmin";'
@@ -757,6 +759,8 @@ def create_new_table_for_daily_active_pass(date):
       'wifi_mac text,'\
       'date_s text,'\
       'proj_name text,'\
+      'sub_channel_name text,'\
+      'sub_channel_id text,'\
       'CONSTRAINT '+daily_table+'_pkey PRIMARY KEY (id))'\
       'WITH (OIDS=FALSE);'\
       'ALTER TABLE public.'+daily_table+' OWNER TO "littleAdmin";'      
@@ -1111,7 +1115,7 @@ def insert_formatted_data_to_db_pass_new_2017():
 
     # daily_table_list = ['table_daily_active_2017_01_13', 'table_daily_active_2016_12_29', 'table_daily_active_2016_08_30', 'table_daily_active_2017_01_25', 'table_daily_active_2016_09_03', 'table_daily_active_2016_12_05', 'table_daily_active_2016_11_23', 'table_daily_active_2016_06_13', 'table_daily_active_2016_06_14', 'table_daily_active_2016_06_15', 'table_daily_active_2016_06_16', 'table_daily_active_2017_01_21', 'table_daily_active_2016_07_06', 'table_daily_active_2016_07_07', 'table_daily_active_2016_07_08', 'table_daily_active_2016_07_09', 'table_daily_active_2016_12_27', 'table_daily_active_2016_09_13', 'table_daily_active_2017_01_24', 'table_daily_active_2016_08_29', 'table_daily_active_2016_12_14', 'table_daily_active_2016_09_04', 'table_daily_active_2017_01_07', 'table_daily_active_2016_07_04', 'table_daily_active_2016_07_05', 'table_daily_active_2017_01_08', 'table_daily_active_2016_09_05', 'table_daily_active_2017_01_12', 'table_daily_active_2016_12_06', 'table_daily_active_2016_11_22', 'table_daily_active_2016_09_06', 'table_daily_active_2016_09_14', 'table_daily_active_2016_12_19', 'table_daily_active_2016_06_21', 'table_daily_active_2016_06_22', 'table_daily_active_2016_06_23', 'table_daily_active_2016_06_24', 'table_daily_active_2016_06_25', 'table_daily_active_2016_06_26', 'table_daily_active_2016_06_27', 'table_daily_active_2016_06_28', 'table_daily_active_2016_06_29', 'table_daily_active_2016_06_30', 'table_daily_active_2016_07_01', 'table_daily_active_2016_06_10', 'table_daily_active_2016_06_11', 'table_daily_active_2016_06_12', 'table_daily_active_2016_11_28', 'table_daily_active_2016_06_17', 'table_daily_active_2016_06_18', 'table_daily_active_2016_06_19', 'table_daily_active_2016_06_20', 'table_daily_active_2016_12_18', 'table_daily_active_2017_01_23', 'table_daily_active_2016_05_29', 'table_daily_active_2016_05_30', 'table_daily_active_2016_05_31', 'table_daily_active_2016_12_28', 'table_daily_active_2016_12_30', 'table_daily_active_2017_01_22', 'table_daily_active_2016_07_02', 'table_daily_active_2016_07_03']
 
-    f_name_tar = "/home/log/kkk"
+    f_name_tar = "/home/charles/log/kkk"
 
     ############ 2016 passed end 
     for file in os.listdir(f_name_tar + "_files/"):
@@ -2400,6 +2404,151 @@ def get_tongji_to_frontpage_proj(user_name,date_1,date_2,proj):
     #return HttpResponse("<p>"+str(result_item)+"</p>")
     #print result_str
     return result_str  
+
+#insert subchannel into db
+def insert_subchannel_into_db():
+
+    # sql = "select android_id, imsi, imei, wifi_mac"
+    # cur,conn = get_pgconn()
+    # cur.execute(sql_get_totalduli_ids)
+    # results_get_ids = cur.fetchall()
+    # close_pgconn(cur,conn)     
+
+    time = ""
+    time_p = ""
+    daily_table_last = ""
+
+    sql_get_tables = "select pg_tables.tablename from pg_tables order by pg_tables.tablename"
+    cur,conn= get_pgconn()
+    cur.execute(sql_get_tables)
+    results_get_tables = cur.fetchall()
+    close_pgconn(cur,conn)    
+
+    daily_table_list = []
+    for item_tables in results_get_tables:
+        daily_table_list.append(item_tables[0])
+
+    f_name_tar = "/home/charles/log/kkk"
+
+    ############ 2016 passed end 
+    for file in os.listdir(f_name_tar + "_files/"):
+        f = open(f_name_tar + "_files/"+file)
+        ############ 2016 passed start
+        print file
+        ############ 2016 passed end       
+
+        #f = open(file)
+
+        for i in f: 
+            if i.count('sub_channel')==0:
+                # ############ 2016 passed start
+                # if i.count(']  INFO -- : [')!=0:
+                #     time = i[4:14]
+                #     time_p = time.replace("-","_")
+                # ############ 2016 passed end                
+                continue
+            else:
+                ind_imsi = i.index('imsi')
+                ind_sub_channel = i.index('sub_channel')
+                ind_sub_channel_id = i.index('sub_channel_id')
+                ind_mac = i.index('mac_addr')
+
+                imsi = i[ind_imsi+7:ind_imsi+22]
+
+                sub_channel_clip = i[ind_sub_channel:-1]
+                print sub_channel_clip
+                first_get_yinhao = str(sub_channel_clip).find('"')
+                again_get_yinhao = sub_channel_clip.find('"',14)
+                print first_get_yinhao
+                print again_get_yinhao
+
+                sub_channel_name = sub_channel_clip[first_get_yinhao+1:again_get_yinhao]
+
+                sub_channel_id_clip = i[ind_sub_channel_id:-1]
+                # first_get_yinhao_id = sub_channel_id_clip.find['"']
+                again_get_yinhao_id = sub_channel_id_clip.find(',',17)
+                sub_channel_id = sub_channel_id_clip[16:again_get_yinhao_id]
+
+                wifi_mac = i[ind_mac+11:ind_mac+28]
+                
+                print sub_channel_id_clip
+                print sub_channel_id
+                print sub_channel_name
+
+                #info_join = imsi+"$&&&#####"+imei+"$&&&#####"+android_id+"$&&&#####"+wifi_mac
+
+                ### calculating independent users
+                cur,conn= get_pgconn()
+                sql_update_sub_channel = "update table_activate_num_ids set sub_channel_name='"+sub_channel_name+"',sub_channel_id='" +sub_channel_id + "' where wifi_mac='"+wifi_mac+"'"
+                cur.execute(sql_update_sub_channel)
+                commit_conn(conn)   
+                close_pgconn(cur,conn)   
+
+
+                ### calculating daily active users
+
+                now_t = datetime.datetime.now()
+                now_str_t = now_t.strftime('%Y_%m_%d')
+                daily_table = "table_daily_active_"+now_str_t
+           
+                ############ 2016 passed start
+                daily_table = "table_daily_active_"+time_p
+                #daily_table_last = daily_table     
+                if daily_table in daily_table_list:
+                    print "daily table existed !!!!!"   
+                else:
+                    create_new_table_for_daily_active_pass(time_p)
+                    daily_table_last = daily_table
+                    daily_table_list.append(daily_table)
+                ############ 2016 passed end                
+                cur,conn= get_pgconn()
+                sql_update_sub_channel = "update "+daily_table+" set sub_channel_name='"+sub_channel_name+"',sub_channel_id='" +sub_channel_id + "' where wifi_mac='"+wifi_mac+"'"
+                cur.execute(sql_update_sub_channel)
+                commit_conn(conn)   
+                close_pgconn(cur,conn)  
+                       
+
+        f.close()
+        # os.remove(f_name_tar + "_files/"+file)      
+
+    #os.remove(file_name)
+    #os.remove(f_name_tar)
+    #shutil.rmtree(f_name_tar + "_files/")
+
+    print daily_table_list
+
+    return "OK"    
+
+#adding columns to duli
+def add_columns_to_duli_tables():
+    
+    sql_add_column ="alter table table_activate_num_ids add sub_channel_name text, add sub_channel_id text" 
+    print sql_add_column
+    cur,conn= get_pgconn()
+    cur.execute(sql_add_column)
+    commit_conn(conn)   
+    close_pgconn(cur,conn) 
+
+    return "OK"
+
+#adding columns to daily active tables
+def add_columns_to_dailyactive_tables():
+    
+    sql_get_tables = "select pg_tables.tablename from pg_tables  where pg_tables.tablename like 'table_daily_active_%' order by pg_tables.tablename"
+    cur,conn= get_pgconn()
+    cur.execute(sql_get_tables)
+    results_get_tables = cur.fetchall()
+    close_pgconn(cur,conn) 
+
+    for item in results_get_tables:
+        sql_add_column ="alter table " + item[0] + " add sub_channel_name text, add sub_channel_id text" 
+        print sql_add_column
+        cur,conn= get_pgconn()
+        cur.execute(sql_add_column)
+        commit_conn(conn)   
+        close_pgconn(cur,conn) 
+
+    return "OK"
 
 #insert daily active num for frontpage display
 def insert_manual_daily_active(proj_id, num):
