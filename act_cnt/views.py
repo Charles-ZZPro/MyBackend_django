@@ -291,7 +291,21 @@ def add_columns_to_duli_tables(request):
     # time = request.GET.get('time')    
     # proj_name = request.GET.get('proj_name') 
     return HttpResponse(models.add_columns_to_duli_tables())   
-       
+
+def add_columns_to_total_tables(request):
+    print "fffffffff"
+    # file_name = request.GET.get('file_name')
+    # time = request.GET.get('time')    
+    # proj_name = request.GET.get('proj_name') 
+    return HttpResponse(models.add_columns_to_total_tables())       
+    
+
+def put_total_active_II(request):
+    print "fffffffff"
+    # file_name = request.GET.get('file_name')
+    # time = request.GET.get('time')    
+    # proj_name = request.GET.get('proj_name') 
+    return HttpResponse(models.put_total_active_II())     
            
 ####################
 def putting_data(request):

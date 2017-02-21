@@ -44,7 +44,11 @@ urlpatterns = [
     url(r'^get_b/$', views.get_b),      
     url(r'^insert_subchannel_into_db/$', views.insert_subchannel_into_db),    
     url(r'^add_columns_to_dailyactive_tables/$', views.add_columns_to_dailyactive_tables),   
-    url(r'^add_columns_to_duli_tables/$', views.add_columns_to_duli_tables),       
+    url(r'^add_columns_to_duli_tables/$', views.add_columns_to_duli_tables),    
+    url(r'^put_total_active_II/$', views.put_total_active_II),   
+    url(r'^add_columns_to_total_tables/$', views.add_columns_to_total_tables),       
+           
+      
 #############                
 ]
 #http://120.77.179.136/

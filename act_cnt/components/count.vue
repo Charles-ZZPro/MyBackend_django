@@ -15,6 +15,7 @@
     position: absolute;
     top: 0px;
     right: 670px;
+/*    right: 640px;*/    
   }
   .filterData{
     position: absolute;
@@ -33,7 +34,20 @@
           type="daterange"
           placeholder="选择日期范围" style="width: 300px">
         </el-date-picker> -->
-        
+<!--         <el-row>
+          <el-col :span='5'>
+            <div>
+              <span class="demonstration">起始:</span>
+              <el-date-picker
+                v-model="value1"
+                type="date"
+                placeholder="选择日期"
+                :picker-options="pickerOptions1">
+              </el-date-picker> 
+            </div>
+          </el-col>
+        </el-row> -->
+
       <span class="demonstration">起始:</span>
       <el-date-picker
         v-model="value1"
@@ -52,7 +66,7 @@
 
       <span class="demonstration">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>
       <span class="demonstration">选择项目:</span>
-<!--       <el-col :span="5"> -->
+
         <el-select v-model="value" placeholder="请选择" @change="proj_sel" class='zh-select'>
           <el-option
             v-for="item in selectProj"
@@ -60,13 +74,13 @@
             :value="item">
           </el-option>
         </el-select>
-<!--       </el-col> -->
+
 
 
     <el-button v-on:click="getCustomersFilter" class='filterData'>筛选</el-button>        
     </div>
     <el-table :data="countData" class="countTable" >
-      <el-table-column prop="proj_name" label="项目" style="width: 20%"></el-table-column>
+      <el-table-column prop="sub_channel_name" label="项目" style="width: 20%"></el-table-column>
 
       <el-table-column prop="date" label="日期" style="width: 20%"></el-table-column>      date
       <el-table-column prop="daily_active" label="日活跃" style="width: 20%"></el-table-column>
@@ -148,7 +162,8 @@
         //   {project:'项目3',newAdd:'6765',newAdduser:'6643'},
         //   {project:'项目4',newAdd:'75455',newAdduser:'12311'},
         // ]
-        //apiUrl_filter: 'http://120.77.179.136:8099/act_cnt/get_tongji_to_frontpage?',   
+        //apiUrl_filter: 'http://120.77.179.136:8099/act_cnt/get_tongji_to_frontpage?', 
+        //apiUrl_filter_proj: 'http://localhost:8099/act_cnt/get_tongji_to_frontpage_proj?',  
         //apiUrl_projs: 'http://120.77.179.136:8099/act_cnt/get_projs?', 
         apiUrl_filter: 'http://localhost:8099/act_cnt/get_tongji_to_frontpage?', 
         apiUrl_filter_proj: 'http://localhost:8099/act_cnt/get_tongji_to_frontpage_proj?', 
