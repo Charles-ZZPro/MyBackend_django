@@ -2534,7 +2534,7 @@ def insert_subchannel_into_db():
     # cur,conn = get_pgconn()
     # cur.execute(sql_get_totalduli_ids)
     # results_get_ids = cur.fetchall()
-    # close_pgconn(cur,conn)     
+    # close_pgconn(cur,conn)
 
     time = ""
     time_p = ""
@@ -2544,7 +2544,7 @@ def insert_subchannel_into_db():
     cur,conn= get_pgconn()
     cur.execute(sql_get_tables)
     results_get_tables = cur.fetchall()
-    close_pgconn(cur,conn)    
+    close_pgconn(cur,conn)
 
     daily_table_list = []
     for item_tables in results_get_tables:
@@ -2552,22 +2552,24 @@ def insert_subchannel_into_db():
 
     f_name_tar = "/home/charles/log/kkk"
 
-    ############ 2016 passed end 
+    ############ 2016 passed end
     for file in os.listdir(f_name_tar + "_files/"):
         f = open(f_name_tar + "_files/"+file)
         ############ 2016 passed start
         print file
-        ############ 2016 passed end       
+        ############ 2016 passed end
 
         #f = open(file)
 
-        for i in f: 
+        inde_ad = 0
+
+        for i in f:
             if i.count('sub_channel')==0:
                 # ############ 2016 passed start
                 # if i.count(']  INFO -- : [')!=0:
                 #     time = i[4:14]
                 #     time_p = time.replace("-","_")
-                # ############ 2016 passed end                
+                # ############ 2016 passed end
                 continue
             else:
                 ind_imsi = i.find('imsi')
@@ -2581,11 +2583,11 @@ def insert_subchannel_into_db():
                     imsi = i[ind_imsi+7:ind_imsi+22]
 
                     sub_channel_clip = i[ind_sub_channel:-1]
-                    print sub_channel_clip
+                    #print sub_channel_clip
                     first_get_yinhao = str(sub_channel_clip).find('"')
                     again_get_yinhao = sub_channel_clip.find('"',14)
-                    print first_get_yinhao
-                    print again_get_yinhao
+                    #print first_get_yinhao
+                    #print again_get_yinhao
 
                     sub_channel_name = sub_channel_clip[first_get_yinhao+1:again_get_yinhao]
 
@@ -2595,19 +2597,35 @@ def insert_subchannel_into_db():
                     sub_channel_id = sub_channel_id_clip[16:again_get_yinhao_id]
 
                     wifi_mac = i[ind_mac+11:ind_mac+28]
-                    
-                    print sub_channel_id_clip
-                    print sub_channel_id
-                    print sub_channel_name
+
+                    #print sub_channel_id_clip
+                    #print sub_channel_id
+                    #print sub_channel_name
 
                     #info_join = imsi+"$&&&#####"+imei+"$&&&#####"+android_id+"$&&&#####"+wifi_mac
+
+                    sql_get_t = "select id from table_activate_num_ids  where wifi_mac='"+wifi_mac+"' and sub_channel_name is NULL" 
+                    cur,conn= get_pgconn()
+                    cur.execute(sql_get_t)
+                    results_get_t = cur.fetchall()
+                    close_pgconn(cur,conn)
+
+                    if results_get_t==[]:
+                       continue
+
+                    # if results_get_t[0][0]!="":
+                    #    #print "updated , skipping !!!"
+                    #    #print results_get_t[0][0]
+                    #    #print str(results_get_t[0][0])
+                    #    continue
+
 
                     ### calculating independent users
                     cur,conn= get_pgconn()
                     sql_update_sub_channel = "update table_activate_num_ids set sub_channel_name='"+sub_channel_name+"',sub_channel_id='" +sub_channel_id + "' where wifi_mac='"+wifi_mac+"'"
                     cur.execute(sql_update_sub_channel)
-                    commit_conn(conn)   
-                    close_pgconn(cur,conn)   
+                    commit_conn(conn)
+                    close_pgconn(cur,conn)
 
 
                     ### calculating daily active users
@@ -2615,26 +2633,29 @@ def insert_subchannel_into_db():
                     now_t = datetime.datetime.now()
                     now_str_t = now_t.strftime('%Y_%m_%d')
                     daily_table = "table_daily_active_"+now_str_t
-               
+
                     ############ 2016 passed start
                     daily_table = "table_daily_active_"+time_p
-                    #daily_table_last = daily_table     
+                    #daily_table_last = daily_table
                     if daily_table in daily_table_list:
-                        print "daily table existed !!!!!"   
+                        print "daily table existed !!!!!"
                     else:
                         create_new_table_for_daily_active_pass(time_p)
                         daily_table_last = daily_table
                         daily_table_list.append(daily_table)
-                    ############ 2016 passed end                
+                    ############ 2016 passed end
                     cur,conn= get_pgconn()
                     sql_update_sub_channel = "update "+daily_table+" set sub_channel_name='"+sub_channel_name+"',sub_channel_id='" +sub_channel_id + "' where wifi_mac='"+wifi_mac+"'"
                     cur.execute(sql_update_sub_channel)
-                    commit_conn(conn)   
-                    close_pgconn(cur,conn)  
-                       
+                    commit_conn(conn)
+                    close_pgconn(cur,conn)
+
+                    inde_ad = inde_ad + 1
+                    print("duli id cals num : "+str(inde_ad))
+
 
         f.close()
-        # os.remove(f_name_tar + "_files/"+file)      
+        # os.remove(f_name_tar + "_files/"+file)
 
     #os.remove(file_name)
     #os.remove(f_name_tar)
@@ -2642,7 +2663,7 @@ def insert_subchannel_into_db():
 
     print daily_table_list
 
-    return "OK"    
+    return "OK"
 
 #adding columns to duli
 def add_columns_to_duli_tables():
