@@ -10,17 +10,15 @@
     width:80%;
     color: #475669
   }
-  .zh-select{
-    width: 300px;
-    position: absolute;
-    top: 0px;
-    right: 670px;
-/*    right: 640px;*/    
+  .zh-wenzi{
+    display: inline-block;
   }
-  .filterData{
-    position: absolute;
-    top: 0;
-    right: 600px
+  .zh-select{
+    display: inline-block;
+    width: 180px
+  }
+  .zh-start{
+    width: 120px
   }
 </style>
 <template>
@@ -28,27 +26,41 @@
 
 
     <div class="block time">
-<!--       <el-date-picker v-model="timeSelect" type="daterange"></el-date-picker> -->
-<!--         <el-date-picker
-          v-model="value"
-          type="daterange"
-          placeholder="选择日期范围" style="width: 300px">
-        </el-date-picker> -->
-<!--         <el-row>
-          <el-col :span='5'>
-            <div>
-              <span class="demonstration">起始:</span>
-              <el-date-picker
-                v-model="value1"
-                type="date"
-                placeholder="选择日期"
-                :picker-options="pickerOptions1">
-              </el-date-picker> 
-            </div>
-          </el-col>
-        </el-row> -->
+    <el-row :span='16'>
+      <el-col :span='4' >
+          起始:
+          <el-date-picker
+          v-model="value1"
+          type="date"
+          placeholder="选择日期"
+          :picker-options="pickerOptions1" class='zh-start'>
+          </el-date-picker> 
+      </el-col>
+      <el-col :span='4' >
+        结束:
+        <el-date-picker
+        v-model="value2"
+        type="date"
+        placeholder="选择日期"
+        :picker-options="pickerOptions1" class='zh-start'>
+        </el-date-picker>
+      </el-col>
+      <el-col :span='6'>
+        <span class='zh-wenzi'>选择项目:</span>
+        <el-select v-model="value" placeholder="请选择" @change="proj_sel" class='zh-select'>
+          <el-option
+            v-for="item in selectProj"
+            :label="item"
+            :value="item" >
+          </el-option>
+        </el-select>
+      </el-col>
+      <el-col :span='2'>
+        <el-button v-on:click="getCustomersFilter" >筛选</el-button>
+      </el-col>
+    </el-row>
 
-      <span class="demonstration">起始:</span>
+      <!-- <span class="demonstration">起始:</span>
       <el-date-picker
         v-model="value1"
         type="date"
@@ -74,10 +86,7 @@
             :value="item">
           </el-option>
         </el-select>
-
-
-
-    <el-button v-on:click="getCustomersFilter" class='filterData'>筛选</el-button>        
+      <el-button v-on:click="getCustomersFilter" class='filterData'>筛选</el-button>   -->      
     </div>
     <el-table :data="countData" class="countTable" >
       <el-table-column prop="sub_channel_name" label="项目" style="width: 20%"></el-table-column>
