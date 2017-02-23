@@ -1055,6 +1055,23 @@ def insert_formatted_data_to_db_pass(file_name,time,proj_name):
 
     return "OK"
 
+
+def compare(x, y):
+
+    DIR = "/home/charles/log/kkk_files"
+
+    stat_x = os.stat(DIR + "/" + x)
+
+    stat_y = os.stat(DIR + "/" + y)
+
+    if stat_x.st_ctime < stat_y.st_ctime:
+        return -1
+    elif stat_x.st_ctime > stat_y.st_ctime:
+        return 1
+    else:
+        return 0
+
+
 #从rawdata压缩文件中提取有效新增独立用户，插入数据库
 def insert_formatted_data_to_db_pass_new_2017():
 
@@ -1116,11 +1133,38 @@ def insert_formatted_data_to_db_pass_new_2017():
     f_name_tar = "/home/charles/log/kkk"
 
     ############ 2016 passed end 
+
+    count_loop = 0
+
+    # iterms = os.listdir(f_name_tar + "_files/")
+    # iterms.sort(compare)   
+    # for item in iterms:
+    #     print str(item)
+    # # print iterms
+    # return "getting out"
+
     for file in os.listdir(f_name_tar + "_files/"):
         f = open(f_name_tar + "_files/"+file)
         ############ 2016 passed start
-        print file
+        print ("file_name : "+str(file))
         ############ 2016 passed end       
+        if file.count('production_')==0:
+            print "Not log file !!!!!"
+            os.remove(f_name_tar + "_files/"+file)
+            continue
+
+        now_t = datetime.datetime.now()
+        now_str_t = now_t.strftime('%Y-%m-%d')
+        
+        log_name = "production_"+now_str_t
+        
+        if file.count(log_name)==0:
+            print "log file too old !!!!! deleting it"
+            os.remove(f_name_tar + "_files/"+file)
+            continue
+
+        # if count_loop>=5:
+        #     break
 
         #f = open(file)
 
@@ -1293,11 +1337,13 @@ def insert_formatted_data_to_db_pass_new_2017():
                 continue       
 
         f.close()
-        # os.remove(f_name_tar + "_files/"+file)      
+        os.remove(f_name_tar + "_files/"+file)      
+        count_loop = count_loop + 1
 
     #os.remove(file_name)
     #os.remove(f_name_tar)
     #shutil.rmtree(f_name_tar + "_files/")
+
 
     print daily_table_list
 

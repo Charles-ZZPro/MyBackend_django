@@ -45,8 +45,5 @@ if targetLine!=l[-1]:
     f.write("\n")
     f.write(l[-1])
     f.close()
-    # url_path = "http://localhost:8099/act_cnt/insert_formatted_data_to_db_pass_new_2017/?file_name="+l[-1]+"&time="+time+"&proj_name="+proj_name
-    # url_path = "http://localhost:8099/act_cnt/insert_formatted_data_to_db_pass_new_2017/?file_name="+l[-1]+"&time="+time+"&proj_name="+proj_name
-    url_path = "http://localhost:8099/act_cnt/insert_formatted_data_to_db_pass_new_2017/"
-    # url_path = "http://120.77.179.136:8099/act_cnt/insert_formatted_data_to_db_pass_new_2017/"
+    url_path = "http://localhost:8099/act_cnt/insert_formatted_data_to_db_pass/?file_name="+l[-1]+"&time="+time+"&proj_name="+proj_name
     s = urllib2.urlopen(url_path).read()
