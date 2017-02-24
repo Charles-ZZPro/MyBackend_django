@@ -1156,12 +1156,12 @@ def insert_formatted_data_to_db_pass_new_2017():
         now_t = datetime.datetime.now()
         now_str_t = now_t.strftime('%Y-%m-%d')
         
-        log_name = "production_"+now_str_t
+        # log_name = "production_"+now_str_t
         
-        if file.count(log_name)==0:
-            print "log file too old !!!!! deleting it"
-            os.remove(f_name_tar + "_files/"+file)
-            continue
+        # if file.count(log_name)==0:
+        #     print "log file too old !!!!! deleting it"
+        #     os.remove(f_name_tar + "_files/"+file)
+        #     continue
 
         # if count_loop>=5:
         #     break
