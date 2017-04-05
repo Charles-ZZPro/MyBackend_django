@@ -46,7 +46,8 @@ urlpatterns = [
     url(r'^add_columns_to_dailyactive_tables/$', views.add_columns_to_dailyactive_tables),   
     url(r'^add_columns_to_duli_tables/$', views.add_columns_to_duli_tables),    
     url(r'^put_total_active_II/$', views.put_total_active_II),   
-    url(r'^add_columns_to_total_tables/$', views.add_columns_to_total_tables),       
+    url(r'^add_columns_to_total_tables/$', views.add_columns_to_total_tables),    
+    url(r'^check_files_for_updated/$', views.check_files_for_updated),          
            
       
 #############                

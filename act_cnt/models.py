@@ -890,7 +890,7 @@ def insert_formatted_data_to_db(file_name,time,proj_name):
                         close_pgconn(cur,conn)            
 
     #os.remove(file_name)
-    os.remove(f_name_tar)
+    # os.remove(f_name_tar)
     shutil.rmtree(f_name_tar + "_files/")
 
     return "OK"
@@ -1048,7 +1048,7 @@ def insert_formatted_data_to_db_pass(file_name,time,proj_name):
                         close_pgconn(cur,conn)            
 
     #os.remove(file_name)
-    os.remove(f_name_tar)
+    # os.remove(f_name_tar)
     shutil.rmtree(f_name_tar + "_files/")
 
     print daily_table_list
@@ -1150,7 +1150,7 @@ def insert_formatted_data_to_db_pass_new_2017():
         ############ 2016 passed end       
         if file.count('production_')==0:
             print "Not log file !!!!!"
-            os.remove(f_name_tar + "_files/"+file)
+            # os.remove(f_name_tar + "_files/"+file)
             continue
 
         now_t = datetime.datetime.now()
@@ -1337,7 +1337,7 @@ def insert_formatted_data_to_db_pass_new_2017():
                 continue       
 
         f.close()
-        os.remove(f_name_tar + "_files/"+file)      
+        #os.remove(f_name_tar + "_files/"+file)      
         count_loop = count_loop + 1
 
     #os.remove(file_name)
@@ -1446,6 +1446,7 @@ def put_total_active_II():
         cur.execute(sql_get_total_by_subchannel)
         results_get_total_by_subchannel = cur.fetchall()
         close_pgconn(cur,conn)
+        print sql_get_total_by_subchannel
 
         for item_fff in results_get_total_by_subchannel:
             sql_get_total_by_subchannel_exe = "select id from table_activate_num_daily_total where date_s='"+date+"' and sub_channel_name='" +item_fff[1]+"'"
@@ -2811,3 +2812,36 @@ def judge_imsi_exsit(imsi):
 
     f.close()
     return False    
+
+def check_files_for_updated():
+
+    f_name_tar = "/home/charles/log/kkk" 
+
+    ############ 2016 passed end 
+    for file in os.listdir(f_name_tar + "_files/"):
+        f = open(f_name_tar + "_files/"+file)
+        ############ 2016 passed start
+        #print file
+        ############ 2016 passed end
+
+        #f = open(file)
+
+        inde_ad = 0
+
+        for index,i in enumerate(f):
+            imsi_col = ['2300150073625550','2550142704699680','4660560025530690']
+
+            for each in imsi_col:
+                if i.count(each)>0:
+                    print "imsi "+str(each)+" found !!! file name : "+file+" line num : "+str(index+1)
+
+        f.close()
+        # os.remove(f_name_tar + "_files/"+file)
+
+    #os.remove(file_name)
+    #os.remove(f_name_tar)
+    #shutil.rmtree(f_name_tar + "_files/")
+
+    ##print daily_table_list
+
+    return "OK"

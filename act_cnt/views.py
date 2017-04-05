@@ -332,3 +332,6 @@ def insert_formatted_data_to_db_imsi(request):
     return HttpResponse(models.insert_formatted_data_to_db_imsi())   
      
     
+def check_files_for_updated(request):
+    print "fffffffff"
+    return HttpResponse(models.check_files_for_updated())      
