@@ -2611,6 +2611,8 @@ def insert_subchannel_into_db():
         inde_ad = 0
 
         for i in f:
+            i = i.encode('utf-8')
+            print i
             if i.count('sub_channel')==0:
                 # ############ 2016 passed start
                 # if i.count(']  INFO -- : [')!=0:
