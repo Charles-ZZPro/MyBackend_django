@@ -2604,6 +2604,11 @@ def insert_subchannel_into_db():
         f = open(f_name_tar + "_files/"+file)
         ############ 2016 passed start
         print file
+
+        if file.count('production_')==0:
+            print "Not log file !!!!!"
+            # os.remove(f_name_tar + "_files/"+file)
+            continue
         ############ 2016 passed end
 
         #f = open(file)
@@ -2612,7 +2617,7 @@ def insert_subchannel_into_db():
 
         for i in f:
             i = i.encode('utf-8')
-            print i
+            #print i
             if i.count('sub_channel')==0:
                 # ############ 2016 passed start
                 # if i.count(']  INFO -- : [')!=0:
