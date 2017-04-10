@@ -54,8 +54,8 @@
         roleList:[],
         selectRole:[],
 
-        //apiUrl_filter: 'http://120.77.179.136:8099/act_cnt/get_rolemenues_info?',        
-        apiUrl_filter: 'http://localhost:8099/act_cnt/get_rolemenues_info?',
+        apiUrl_filter: 'http://120.27.131.91:8099/act_cnt/get_rolemenues_info?',        
+        //apiUrl_filter: 'http://localhost:8099/act_cnt/get_rolemenues_info?',
         }
     },
     methods:{

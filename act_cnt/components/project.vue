@@ -56,9 +56,9 @@
         items:[
 
         ],
-        
-        //apiUrl: 'http://120.77.179.136:8099/act_cnt/get_active_totalnums'
-        apiUrl: 'http://localhost:8099/act_cnt/get_active_totalnums'
+
+        apiUrl: 'http://120.27.131.91:8099/act_cnt/get_active_totalnums'
+        //apiUrl: 'http://localhost:8099/act_cnt/get_active_totalnums'
       }
     },
 
