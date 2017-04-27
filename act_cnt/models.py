@@ -1120,7 +1120,7 @@ def insert_formatted_data_to_db_pass_new_2017():
     time_p = ""
     daily_table_last = ""
 
-    sql_get_tables = "select pg_tables.tablename from pg_tables order by pg_tables.tablename"
+    sql_get_tables = "select pg_tables.tablename from pg_tables order by pg_tables.tablename where pg_tables.tablename LIKE 'table_daily_active_%'"
     cur,conn= get_pgconn()
     cur.execute(sql_get_tables)
     results_get_tables = cur.fetchall()
@@ -1223,6 +1223,8 @@ def insert_formatted_data_to_db_pass_new_2017():
                 if daily_table in daily_table_list:
                     print "daily table existed !!!!!"   
                 else:
+                    if time_p=="":
+                        return "first line userstat!!!"
                     create_new_table_for_daily_active_pass(time_p)
                     daily_table_last = daily_table
                     daily_table_list.append(daily_table)

@@ -100,6 +100,7 @@ def get_map_data(request):
 def get_tongji_to_frontpage(request):
     user_name = request.GET.get('user_name')
     cb_mine = request.GET.get('_cb_mine')
+    #cb_mine="fff"
     date_1 = request.GET.get('value1')
     date_2 = request.GET.get('value2')
     proj = request.GET.get('proj')
@@ -111,6 +112,7 @@ def get_tongji_to_frontpage(request):
 def get_tongji_to_frontpage_proj(request):
     user_name = request.GET.get('user_name')
     cb_mine = request.GET.get('_cb_mine')
+    #cb_mine="fff"
     date_1 = request.GET.get('value1')
     date_2 = request.GET.get('value2')
     proj = request.GET.get('proj')
