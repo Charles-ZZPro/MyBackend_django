@@ -50,8 +50,8 @@ sys.setdefaultencoding('utf-8')
 # Create your models here.
 def get_pgconn():
     # Connect to an existing database
-    #conn = psycopg2.connect("dbname=myTestDB user=postgres password=postgres")
-    conn = psycopg2.connect("dbname=myTestDB user=littleAdmin password=postgres")
+    conn = psycopg2.connect("dbname=myTestDB user=postgres password=postgres")
+    #conn = psycopg2.connect("dbname=myTestDB user=littleAdmin password=postgres")
     # Open a cursor to perform database operations
     cur = conn.cursor()
     return cur,conn
@@ -715,7 +715,7 @@ def create_new_table_for_daily_active():
     daily_table = "table_daily_active_"+now_str_t
 
     cur,conn = get_pgconn()  
-    sql_create_seq = 'CREATE SEQUENCE public.'+daily_table+'_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 99999999 START 1 CACHE 1;'+'ALTER TABLE public.'+daily_table+'_id_seq OWNER TO "littleAdmin";'    
+    sql_create_seq = 'CREATE SEQUENCE public.'+daily_table+'_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 99999999 START 1 CACHE 1;'+'ALTER TABLE public.'+daily_table+'_id_seq OWNER TO "postgres";'    
     cur.execute(sql_create_seq)
     commit_conn(conn)   
     close_pgconn(cur,conn) 
@@ -731,7 +731,7 @@ def create_new_table_for_daily_active():
       'sub_channel_id text,'\
       'CONSTRAINT '+daily_table+'_pkey PRIMARY KEY (id))'\
       'WITH (OIDS=FALSE);'\
-      'ALTER TABLE public.'+daily_table+' OWNER TO "littleAdmin";'
+      'ALTER TABLE public.'+daily_table+' OWNER TO "postgres";'
     cur.execute(sql_create)
     commit_conn(conn)   
     close_pgconn(cur,conn) 
@@ -747,7 +747,7 @@ def create_new_table_for_daily_active_pass(date):
     daily_table = "table_daily_active_"+date
 
     cur,conn = get_pgconn()  
-    sql_create_seq = 'CREATE SEQUENCE public.'+daily_table+'_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 99999999 START 1 CACHE 1;'+'ALTER TABLE public.'+daily_table+'_id_seq OWNER TO "littleAdmin";'    
+    sql_create_seq = 'CREATE SEQUENCE public.'+daily_table+'_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 99999999 START 1 CACHE 1;'+'ALTER TABLE public.'+daily_table+'_id_seq OWNER TO "postgres";'    
     cur.execute(sql_create_seq)
     commit_conn(conn)   
     close_pgconn(cur,conn) 
@@ -763,7 +763,7 @@ def create_new_table_for_daily_active_pass(date):
       'sub_channel_id text,'\
       'CONSTRAINT '+daily_table+'_pkey PRIMARY KEY (id))'\
       'WITH (OIDS=FALSE);'\
-      'ALTER TABLE public.'+daily_table+' OWNER TO "littleAdmin";'      
+      'ALTER TABLE public.'+daily_table+' OWNER TO "postgres";'      
     cur.execute(sql_create)
     commit_conn(conn)   
     close_pgconn(cur,conn) 
@@ -1120,7 +1120,7 @@ def insert_formatted_data_to_db_pass_new_2017():
     time_p = ""
     daily_table_last = ""
 
-    sql_get_tables = "select pg_tables.tablename from pg_tables order by pg_tables.tablename where pg_tables.tablename LIKE 'table_daily_active_%'"
+    sql_get_tables = "select pg_tables.tablename from pg_tables  where pg_tables.tablename LIKE 'table_daily_active_%' order by pg_tables.tablename"
     cur,conn= get_pgconn()
     cur.execute(sql_get_tables)
     results_get_tables = cur.fetchall()
