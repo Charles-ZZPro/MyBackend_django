@@ -172,9 +172,9 @@
         //   {project:'项目4',newAdd:'75455',newAdduser:'12311'},
         // ]
 
-        apiUrl_filter: 'http://120.27.131.91:8099/act_cnt/get_tongji_to_frontpage?', 
-        apiUrl_filter_proj: 'http://120.27.131.91:8099/act_cnt/get_tongji_to_frontpage_proj?',  
-        apiUrl_projs: 'http://120.27.131.91:8099/act_cnt/get_projs?', 
+        apiUrl_filter: 'http://120.27.131.91:8098/act_cnt/get_tongji_to_frontpage?', 
+        apiUrl_filter_proj: 'http://120.27.131.91:8098/act_cnt/get_tongji_to_frontpage_proj?',  
+        apiUrl_projs: 'http://120.27.131.91:8098/act_cnt/get_projs?', 
         //apiUrl_filter: 'http://localhost:8099/act_cnt/get_tongji_to_frontpage?', 
         //apiUrl_filter_proj: 'http://localhost:8099/act_cnt/get_tongji_to_frontpage_proj?', 
         //apiUrl_projs: 'http://localhost:8099/act_cnt/get_projs?',

@@ -109,8 +109,8 @@
         nameInput:'',
         passInput:'',
         user_pass:'',
-        apiUrl:'http://120.27.131.91:8099/act_cnt/get_user_info',
-        apiUrl_put_logintime:'http://120.27.131.91:8099/act_cnt/put_logintime',
+        apiUrl:'http://120.27.131.91:8098/act_cnt/get_user_info',
+        apiUrl_put_logintime:'http://120.27.131.91:8098/act_cnt/put_logintime',
         //apiUrl:'http://localhost:8099/act_cnt/get_user_info',
         //apiUrl_put_logintime:'http://localhost:8099/act_cnt/put_logintime',
         showWrong:false
